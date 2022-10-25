@@ -1,0 +1,126 @@
+[
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "g++",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-MMD",
+   "-MP",
+   "-std=c++20",
+   "-c",
+   "src/main.cpp",
+   "-o",
+   "build/./src/main.cpp.o"
+  ],
+  "file": "src/main.cpp"
+ },
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "cc",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-MMD",
+   "-MP",
+   "-c",
+   "vendor/sqlite/sqlite3.c",
+   "-o",
+   "build/./vendor/sqlite/sqlite3.c.o"
+  ],
+  "file": "vendor/sqlite/sqlite3.c"
+ },
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "g++",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-MMD",
+   "-MP",
+   "-std=c++20",
+   "-c",
+   "vendor/loguru/loguru.cpp",
+   "-o",
+   "build/./vendor/loguru/loguru.cpp.o"
+  ],
+  "file": "vendor/loguru/loguru.cpp"
+ },
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "g++",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-MMD",
+   "-MP",
+   "-std=c++20",
+   "-c",
+   "src/term.cpp",
+   "-o",
+   "build/./src/term.cpp.o"
+  ],
+  "file": "src/term.cpp"
+ },
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "g++",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-MMD",
+   "-MP",
+   "-std=c++20",
+   "-c",
+   "src/escb.cpp",
+   "-o",
+   "build/./src/escb.cpp.o"
+  ],
+  "file": "src/escb.cpp"
+ },
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "g++",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-MMD",
+   "-MP",
+   "-std=c++20",
+   "-c",
+   "src/io.cpp",
+   "-o",
+   "build/./src/io.cpp.o"
+  ],
+  "file": "src/io.cpp"
+ },
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "cc",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-MMD",
+   "-MP",
+   "-c",
+   "vendor/printf/printf.c",
+   "-o",
+   "build/./vendor/printf/printf.c.o"
+  ],
+  "file": "vendor/printf/printf.c"
+ }
+]
