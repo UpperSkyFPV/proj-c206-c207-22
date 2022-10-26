@@ -11,12 +11,18 @@ DEPS := $(OBJS:.o=.d)
 
 INC_DIRS := $(shell find $(SRC_DIRS) -type d) \
 			./vendor/sqlite \
-			./vendor/loguru
+			./vendor/loguru \
+			./vendor/tl/include
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CMMFLAGS ?= $(INC_FLAGS) -MMD -MP
+DEBUGFLAGS ?= -g
+RELEASEFLAGS ?= -O2
+CMMFLAGS ?= $(INC_FLAGS) -MMD -MP $(DEBUGFLAGS)
 CPPFLAGS ?= -std=c++20
 LDFLAGS ?= -lpthread -ldl -lm
+
+CXX = clang++
+CC = clang
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)

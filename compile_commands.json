@@ -7,6 +7,7 @@
    "-I./vendor/printf",
    "-I./vendor/sqlite",
    "-I./vendor/loguru",
+   "-I./vendor/tl/include",
    "-MMD",
    "-MP",
    "-std=c++20",
@@ -25,6 +26,7 @@
    "-I./vendor/printf",
    "-I./vendor/sqlite",
    "-I./vendor/loguru",
+   "-I./vendor/tl/include",
    "-MMD",
    "-MP",
    "-c",
@@ -42,6 +44,7 @@
    "-I./vendor/printf",
    "-I./vendor/sqlite",
    "-I./vendor/loguru",
+   "-I./vendor/tl/include",
    "-MMD",
    "-MP",
    "-std=c++20",
@@ -60,6 +63,7 @@
    "-I./vendor/printf",
    "-I./vendor/sqlite",
    "-I./vendor/loguru",
+   "-I./vendor/tl/include",
    "-MMD",
    "-MP",
    "-std=c++20",
@@ -78,6 +82,7 @@
    "-I./vendor/printf",
    "-I./vendor/sqlite",
    "-I./vendor/loguru",
+   "-I./vendor/tl/include",
    "-MMD",
    "-MP",
    "-std=c++20",
@@ -96,6 +101,7 @@
    "-I./vendor/printf",
    "-I./vendor/sqlite",
    "-I./vendor/loguru",
+   "-I./vendor/tl/include",
    "-MMD",
    "-MP",
    "-std=c++20",
@@ -114,6 +120,7 @@
    "-I./vendor/printf",
    "-I./vendor/sqlite",
    "-I./vendor/loguru",
+   "-I./vendor/tl/include",
    "-MMD",
    "-MP",
    "-c",
@@ -122,5 +129,24 @@
    "build/./vendor/printf/printf.c.o"
   ],
   "file": "vendor/printf/printf.c"
+ },
+ {
+  "directory": "/home/upprsk/Documents/ina/proj-c206-c207/repo",
+  "arguments": [
+   "g++",
+   "-I./src",
+   "-I./vendor/printf",
+   "-I./vendor/sqlite",
+   "-I./vendor/loguru",
+   "-I./vendor/tl/include",
+   "-MMD",
+   "-MP",
+   "-std=c++20",
+   "-c",
+   "src/db.cpp",
+   "-o",
+   "build/./src/db.cpp.o"
+  ],
+  "file": "src/db.cpp"
  }
 ]

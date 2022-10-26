@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <span>
+#include <string>
 #include <string_view>
 
 namespace uppr {
@@ -19,6 +20,7 @@ using std::span;
 using std::string_view;
 
 using namespace std::string_view_literals;
+using namespace std::string_literals;
 
 template <usize N>
 constexpr string_view span_as_strv(span<char, N> s) {
