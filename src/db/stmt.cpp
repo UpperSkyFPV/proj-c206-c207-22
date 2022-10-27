@@ -6,7 +6,7 @@ namespace uppr::db {
 
 PreparedStmt::~PreparedStmt() {
     if (stmt) {
-        LOG_F(9, "destructor PreparedStmt@%p", stmt);
+        LOG_F(9, "destructor PreparedStmt@{}", fmt::ptr(stmt));
         sqlite3_finalize(stmt);
     }
 }

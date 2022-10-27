@@ -20,7 +20,7 @@ Connection Connection::open(const char *filename) {
 
 Connection::~Connection() {
     if (db) {
-        LOG_F(9, "destructor Connection@%p", db);
+        LOG_F(9, "destructor Connection@{}", fmt::ptr(db));
         sqlite3_close(db);
     }
 }
@@ -69,8 +69,6 @@ Result Connection::execute_many(
 
     Result rc;
     while (rc.is_ok() && sql.size() > 0) {
-        LOG_SCOPE_F(INFO, "rc=%s", rc.str());
-
         // Prepare the statement
         auto many_ret = prepare_many(sql);
         auto stmt = std::move(many_ret.first);
@@ -81,8 +79,6 @@ Result Connection::execute_many(
 
         while (true) {
             rc = stmt.step();
-
-            LOG_SCOPE_F(INFO, "step rc=%s", rc.str());
 
             if (rc.is_row()) {
                 callback(stmt);
