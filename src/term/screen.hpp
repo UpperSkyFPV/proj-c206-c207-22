@@ -120,7 +120,7 @@ public:
     /**
      * Draw a box on the given postion with the given size
      */
-    void box(const Transform &tl, int width, int height, const BoxOptions &opt);
+    void box(const Transform &tl, usize width, usize height, const BoxOptions &opt);
 
     /**
      * Draw a horizontal line.

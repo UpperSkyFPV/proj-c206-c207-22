@@ -59,7 +59,7 @@ void TermScreen::setc(int x, int y, const Pixel &pixel) {
     mark_dirty();
 }
 
-void TermScreen::box(const Transform &tl, int width, int height,
+void TermScreen::box(const Transform &tl, usize width, usize height,
                      const BoxOptions &opt) {
     setc(tl, opt.edge_topleft);
     setc(tl + Transform{static_cast<int>(width), 0}, opt.edge_topright);
