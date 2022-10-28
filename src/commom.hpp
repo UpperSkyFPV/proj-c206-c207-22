@@ -1,3 +1,13 @@
+/**
+ * @file This contains various type utilities, such as:
+ * - short name sized integers
+ * - shorter versions of normal unsigned integers
+ * - shorter and more readable `size_t`
+ * - removal of `std::` prefix for commom containers
+ * - expansion of the literal namespaces
+ * - some conversion functions
+ */
+
 #pragma once
 
 #include <array>
@@ -8,6 +18,7 @@
 #include <string_view>
 #include <vector>
 #include <memory>
+#include <chrono>
 
 #include "loguru.hpp"
 
@@ -31,9 +42,13 @@ using std::string_view;
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;
+using namespace std::chrono_literals;
 
+/**
+ * Convert a span to a string view.
+ */
 template <usize N>
-constexpr string_view span_as_strv(span<char, N> s) {
+constexpr string_view as_strv(span<char, N> s) {
     return {s.data(), s.size()};
 }
 } // namespace uppr

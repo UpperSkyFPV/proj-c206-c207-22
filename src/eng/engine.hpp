@@ -5,6 +5,33 @@
 
 namespace uppr::eng {
 
+/**
+ * Basic resource and frame management.
+ *
+ * Execution of a frame is divided as follows:
+ * ```
+ *     update scene  <-+------------------+
+ *                     |                  |
+ *                     | update time      |
+ *                     |                  |
+ *                   <-+                  |
+ *       draw scene                       | frame time
+ *                   <---+                |
+ *                       |                |
+ *                       | draw time      |
+ *                       |                |
+ *                   <---+                |
+ * commit to screen                       |
+ *                   <------+             |
+ *                          |             |
+ *                          | commit time |
+ *                          |             |
+ * wait excess time  <------+-------------+
+ *                  
+ *                  
+ *                  
+ * ```
+ */
 class Engine {
 public:
     Engine(int fps_, std::shared_ptr<term::TermScreen> t)
@@ -38,18 +65,35 @@ public:
     constexpr void finalize() { running = false; }
 
     /**
-     * Get the terminal driver thing.
-     */
-    // std::shared_ptr<term::TermScreen> get_screen() const { return screen; }
-
-    /**
      * Get the size of the screen.
      */
     constexpr std::pair<ushort, ushort> get_screen_size() const {
         return screen->get_size();
     }
 
+    /**
+     * Get the time that the last frame took.
+     */
     constexpr int get_frame_time() const { return frame_time; }
+
+    /**
+     * Get the time taken to update the logic.
+     */
+    constexpr int get_update_time() const { return update_time; }
+
+    /**
+     * get the time taken to draw to the pixel buffer.
+     */
+    constexpr int get_draw_time() const { return draw_time; }
+
+    /**
+     * get the time taken to commit the pixel buffer to the terminal
+     */
+    constexpr int get_commit_time() const { return commit_time; }
+
+    /**
+     * Get the maximum time budget of a frame.
+     */
     constexpr int get_max_frame_time() const { return period_millis; }
 
     char readc() const { return screen->readc(); }
@@ -95,11 +139,6 @@ private:
      * The last draw time.
      */
     int draw_time{};
-
-    /**
-     * The last time during the scene (update_time + draw_time).
-     */
-    int scene_time{};
 
     /**
      * The last time during commiting to terminal.

@@ -9,7 +9,7 @@ namespace uppr::eng {
 class Engine;
 
 /**
- * This is the basis for creating logic.
+ * This is the basis for creating "widgets".
  */
 class Scene {
 public:

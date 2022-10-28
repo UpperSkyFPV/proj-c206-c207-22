@@ -4,7 +4,6 @@
 #include <termios.h>
 
 #include "commom.hpp"
-#include "meta/string.hpp"
 
 namespace uppr::term {
 
@@ -25,6 +24,9 @@ inline void set_termios(int fd, const termios &t, int opt = TCSAFLUSH) {
     tcsetattr(fd, opt, &t);
 }
 
+/**
+ * Get the size of the terminal from the system using `TIOCGWINSZ`.
+ */
 inline std::pair<ushort, ushort> get_term_size(int fd) {
     winsize w;
     ioctl(fd, TIOCGWINSZ, &w);
@@ -32,6 +34,9 @@ inline std::pair<ushort, ushort> get_term_size(int fd) {
     return {w.ws_col, w.ws_row};
 }
 
+/**
+ * This is the starting escape sequence for most commands.
+ */
 static constexpr auto ESC = "\x1B["sv;
 
 } // namespace uppr::term

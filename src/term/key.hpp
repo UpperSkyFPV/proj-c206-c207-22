@@ -1,3 +1,7 @@
+/**
+ * @file Lots of simple inline functions to check for terminal input.
+ */
+
 #pragma once
 
 #include "commom.hpp"

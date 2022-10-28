@@ -3,7 +3,6 @@
 #include "commom.hpp"
 #include "fmt/color.h"
 #include "fmt/core.h"
-#include "meta/string.hpp"
 #include "term/key.hpp"
 #include "termios.hpp"
 #include <cstdio>

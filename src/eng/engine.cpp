@@ -33,16 +33,15 @@ void Engine::run() {
             // Stop if we ever have no scene, as this is an error
             LOG_F(FATAL, "No scene in engine!");
         }
- 
+
         const auto end_scene = steady_clock::now();
-        scene_time = duration_cast<microseconds>(end_scene - start).count();
 
         // Actually commit the screen pixels to the terminal
         screen->commit();
 
         const auto end = steady_clock::now();
         frame_time = duration_cast<microseconds>(end - start).count();
-        scene_time = duration_cast<microseconds>(end - end_scene).count();
+        commit_time = duration_cast<microseconds>(end - end_scene).count();
 
         // Dont go too fast
         if (frame_time < period_millis)

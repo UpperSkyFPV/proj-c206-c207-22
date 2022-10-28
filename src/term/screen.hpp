@@ -9,29 +9,44 @@
 namespace uppr::term {
 
 /**
- * Add a buffer between the terminal driver and user code.
+ * Add a buffer between the terminal driver and user code, so that more
+ * interesting things can be done in a way more eficient way then direct
+ * printing of control sequences.
+ *
+ * Terminal printing is the slowest part of the whole process, so by reducing
+ * the ammount of things we send to it we gain a lot of speed.
  */
 class TermScreen {
 public:
+    /**
+     * Construct the screen. Parameters are given directly to the `Term` class.
+     */
     TermScreen(int input_file_descr, FILE *output_file)
         : term{input_file_descr, output_file} {
         update_buffer_size();
-
         term.clear_term();
     }
 
+    /**
+     * Actually commit the buffer to the terminal screen.
+     *
+     * If the `dirty` flag is not set, then this call has absolutally no effect.
+     */
     void commit();
 
 public:
+    /**
+     * Get the size of the terminal.
+     */
     constexpr auto get_size() const noexcept { return term.get_size(); }
 
     /**
-     * Read a character from the terminal.
+     * Read a single character from the terminal.
      */
-    auto readc() const { return term.readc(); }
+    char readc() const { return term.readc(); }
 
     /**
-     * Set a pixel in the buffer.
+     * Set a pixel in the buffer at the given coordinates.
      */
     void setc(usize x, usize y, const Pixel &pixel);
 
@@ -63,6 +78,11 @@ public:
      * Draw a horizontal line.
      */
     void hline(usize sx, usize ex, usize y, const Pixel &fill);
+
+    /**
+     * Draw a vertical line.
+     */
+    void vline(usize x, usize sy, usize ey, const Pixel &fill);
 
     void vprint(usize x, usize y, fmt::string_view fmt, fmt::format_args args);
     void vprint(usize x, usize y, fmt::text_style style, fmt::string_view fmt,
@@ -105,12 +125,18 @@ private:
         return y * w + x;
     }
 
+    /**
+     * If the given coordinates are valid.
+     */
     constexpr bool valid_coords(usize x, usize y) const noexcept {
         const auto [w, h] = term.get_size();
 
         return x <= w && y <= h;
     }
 
+    /**
+     * If the given coordinates are valid with the given width and height.
+     */
     constexpr bool valid_coords(usize w, usize h, usize x,
                                 usize y) const noexcept {
         return x <= w && y <= h;
