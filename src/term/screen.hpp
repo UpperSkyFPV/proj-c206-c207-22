@@ -4,9 +4,22 @@
 #include "fmt/core.h"
 #include "pixel.hpp"
 #include "term.hpp"
+#include "transform.hpp"
 #include <termios.h>
 
 namespace uppr::term {
+
+struct BoxOptions {
+    Pixel line_left = '|';
+    Pixel line_right = '|';
+    Pixel line_top = '-';
+    Pixel line_bottom = '-';
+
+    Pixel edge_topleft = '+';
+    Pixel edge_topright = '+';
+    Pixel edge_bottomleft = '+';
+    Pixel edge_bottomright = '+';
+};
 
 /**
  * Add a buffer between the terminal driver and user code, so that more
@@ -48,7 +61,14 @@ public:
     /**
      * Set a pixel in the buffer at the given coordinates.
      */
-    void setc(usize x, usize y, const Pixel &pixel);
+    void setc(int x, int y, const Pixel &pixel);
+
+    /**
+     * Set a pixel in the buffer with the given transform.
+     */
+    void setc(const Transform &t, const Pixel &pixel) {
+        setc(t.getx(), t.gety(), pixel);
+    }
 
     /**
      * Set a sequence of pixels in a single line to the result of the formatted
@@ -57,9 +77,21 @@ public:
      * **WARNING**: Styling should not be used in the arguments here!
      */
     template <typename... Args>
-    void print(usize x, usize y, fmt::text_style style,
+    void print(int x, int y, fmt::text_style style,
                fmt::format_string<Args...> fmt, Args &&...args) {
         vprint(x, y, style, fmt, fmt::make_format_args(args...));
+    }
+
+    /**
+     * Set a sequence of pixels in a single line to the result of the formatted
+     * string.
+     *
+     * **WARNING**: Styling should not be used in the arguments here!
+     */
+    template <typename... Args>
+    void print(const Transform &t, fmt::text_style style,
+               fmt::format_string<Args...> fmt, Args &&...args) {
+        vprint(t.getx(), t.gety(), style, fmt, fmt::make_format_args(args...));
     }
 
     /**
@@ -69,23 +101,39 @@ public:
      * **WARNING**: Styling should not be used in the arguments here!
      */
     template <typename... Args>
-    void print(usize x, usize y, fmt::format_string<Args...> fmt,
-               Args &&...args) {
+    void print(int x, int y, fmt::format_string<Args...> fmt, Args &&...args) {
         vprint(x, y, fmt, fmt::make_format_args(args...));
     }
 
     /**
+     * Set a sequence of pixels in a single line to the result of the formatted
+     * string with a single style.
+     *
+     * **WARNING**: Styling should not be used in the arguments here!
+     */
+    template <typename... Args>
+    void print(const Transform &t, fmt::format_string<Args...> fmt,
+               Args &&...args) {
+        vprint(t.getx(), t.gety(), fmt, fmt::make_format_args(args...));
+    }
+
+    /**
+     * Draw a box on the given postion with the given size
+     */
+    void box(const Transform &tl, int width, int height, const BoxOptions &opt);
+
+    /**
      * Draw a horizontal line.
      */
-    void hline(usize sx, usize ex, usize y, const Pixel &fill);
+    void hline(int sx, int ex, int y, const Pixel &fill);
 
     /**
      * Draw a vertical line.
      */
-    void vline(usize x, usize sy, usize ey, const Pixel &fill);
+    void vline(int x, int sy, int ey, const Pixel &fill);
 
-    void vprint(usize x, usize y, fmt::string_view fmt, fmt::format_args args);
-    void vprint(usize x, usize y, fmt::text_style style, fmt::string_view fmt,
+    void vprint(int x, int y, fmt::string_view fmt, fmt::format_args args);
+    void vprint(int x, int y, fmt::text_style style, fmt::string_view fmt,
                 fmt::format_args args);
 
 public:
@@ -128,18 +176,16 @@ private:
     /**
      * If the given coordinates are valid.
      */
-    constexpr bool valid_coords(usize x, usize y) const noexcept {
+    constexpr bool valid_coords(int x, int y) const noexcept {
         const auto [w, h] = term.get_size();
-
-        return x <= w && y <= h;
+        return valid_coords(w, h, x, y);
     }
 
     /**
      * If the given coordinates are valid with the given width and height.
      */
-    constexpr bool valid_coords(usize w, usize h, usize x,
-                                usize y) const noexcept {
-        return x <= w && y <= h;
+    constexpr bool valid_coords(usize w, usize h, int x, int y) const noexcept {
+        return x >= 0 && y >= 0 && x <= w && y <= h;
     }
 
     /**

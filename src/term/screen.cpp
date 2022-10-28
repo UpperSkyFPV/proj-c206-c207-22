@@ -49,7 +49,7 @@ void TermScreen::commit() {
     term.flush();
 }
 
-void TermScreen::setc(usize x, usize y, const Pixel &pixel) {
+void TermScreen::setc(int x, int y, const Pixel &pixel) {
     const auto [w, h] = term.get_size();
 
     // Abort on invalid size
@@ -59,31 +59,46 @@ void TermScreen::setc(usize x, usize y, const Pixel &pixel) {
     mark_dirty();
 }
 
-void TermScreen::hline(usize sx, usize ex, usize y, const Pixel &fill) {
+void TermScreen::box(const Transform &tl, int width, int height,
+                     const BoxOptions &opt) {
+    setc(tl, opt.edge_topleft);
+    setc(tl + Transform{static_cast<int>(width), 0}, opt.edge_topright);
+    setc(tl + Transform{0, static_cast<int>(height)}, opt.edge_bottomleft);
+    setc(tl + Transform{static_cast<int>(width), static_cast<int>(height)},
+         opt.edge_bottomright);
+
+    hline(tl.getx() + 1, tl.getx() + width, tl.gety(), opt.line_top);
+    hline(tl.getx() + 1, tl.getx() + width, tl.gety() + height,
+          opt.line_bottom);
+    vline(tl.getx(), tl.gety() + 1, tl.gety() + height, opt.line_left);
+    vline(tl.getx() + width, tl.gety() + 1, tl.gety() + height, opt.line_left);
+}
+
+void TermScreen::hline(int sx, int ex, int y, const Pixel &fill) {
     const auto [w, h] = term.get_size();
 
     // Abort on invalid coords and truncate lines that are to long
     if (!valid_coords(w, h, sx, y)) return;
-    ex = std::min(ex, static_cast<usize>(w));
+    ex = std::min(ex, static_cast<int>(w));
 
     for (; sx != ex; sx++) {
         buffer[ctoidx(sx, y)] = fill;
     }
 }
 
-void TermScreen::vline(usize x, usize sy, usize ey, const Pixel &fill) {
+void TermScreen::vline(int x, int sy, int ey, const Pixel &fill) {
     const auto [w, h] = term.get_size();
 
     // Abort on invalid coords and truncate lines that are to long
     if (!valid_coords(w, h, sy, ey)) return;
-    ey = std::min(ey, static_cast<usize>(w));
+    ey = std::min(ey, static_cast<int>(w));
 
     for (; sy != ey; sy++) {
         buffer[ctoidx(x, sy)] = fill;
     }
 }
 
-void TermScreen::vprint(usize x, usize y, fmt::string_view fmt,
+void TermScreen::vprint(int x, int y, fmt::string_view fmt,
                         fmt::format_args args) {
     const auto [w, h] = term.get_size();
     if (!valid_coords(w, h)) return;
@@ -92,7 +107,7 @@ void TermScreen::vprint(usize x, usize y, fmt::string_view fmt,
     fmt::vformat_to_n(it, w - x, fmt, args);
 }
 
-void TermScreen::vprint(usize x, usize y, fmt::text_style style,
+void TermScreen::vprint(int x, int y, fmt::text_style style,
                         fmt::string_view fmt, fmt::format_args args) {
     const auto [w, h] = term.get_size();
     if (!valid_coords(w, h)) return;

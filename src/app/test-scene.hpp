@@ -4,6 +4,7 @@
 #include "eng/engine.hpp"
 #include "key.hpp"
 #include "screen.hpp"
+#include "transform.hpp"
 
 namespace uppr::app {
 
@@ -41,7 +42,9 @@ public:
 
         screen.clear();
 
-        screen.hline(0, width, 0, {'#'});
+        const term::Transform box_position{10, 10};
+        screen.box(box_position, 10, 5, {});
+        screen.print(box_position + term::Transform{2, 1}, "abc");
 
         screen.setc(position, heigh / 2, {'@', fg(color::green)});
         screen.print(1, 1, bg(color::dark_blue) | fg(color::ghost_white),
