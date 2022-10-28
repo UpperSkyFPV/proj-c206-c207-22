@@ -131,31 +131,35 @@ public:
     }
 
     template <typename... Args>
-    void print(const fmt::text_style& ts, fmt::format_string<Args...> fmt, Args &&...args) const {
+    void print(const fmt::text_style &ts, fmt::format_string<Args...> fmt,
+               Args &&...args) const {
         vprint(ts, fmt, fmt::make_format_args(args...));
     }
 
     template <typename... Args>
-    void print(usize x, usize y, fmt::format_string<Args...> fmt, Args &&...args) const {
+    void print(usize x, usize y, fmt::format_string<Args...> fmt,
+               Args &&...args) const {
         move_cursor(x, y);
         vprint(fmt, fmt::make_format_args(args...));
     }
 
     template <typename... Args>
-    void print(usize x, usize y, const fmt::text_style& ts, fmt::format_string<Args...> fmt, Args &&...args) const {
+    void print(usize x, usize y, const fmt::text_style &ts,
+               fmt::format_string<Args...> fmt, Args &&...args) const {
         move_cursor(x, y);
         vprint(ts, fmt, fmt::make_format_args(args...));
     }
 
     void vprint(fmt::string_view fmt, fmt::format_args args) const {
         fmt::vprint(out, fmt, args);
-        fflush(out);
     }
 
-    void vprint(const fmt::text_style& ts, fmt::string_view fmt, fmt::format_args args) const {
+    void vprint(const fmt::text_style &ts, fmt::string_view fmt,
+                fmt::format_args args) const {
         fmt::vprint(out, ts, fmt, args);
-        fflush(out);
     }
+
+    void flush() const { fflush(out); }
 
 public:
     // input functions

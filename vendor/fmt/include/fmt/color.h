@@ -224,7 +224,7 @@ struct color_type {
   friend FMT_CONSTEXPR bool operator==(const color_type& lhs, const color_type& rhs) {
       return lhs.is_rgb == rhs.is_rgb && lhs.is_rgb
           ? (lhs.value.rgb_color == rhs.value.rgb_color)
-          : (lhs.value.rgb_color == rhs.value.rgb_color);
+          : (lhs.value.term_color == rhs.value.term_color);
   }
 
   bool is_rgb;

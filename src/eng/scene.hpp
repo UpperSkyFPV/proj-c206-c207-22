@@ -1,6 +1,7 @@
 #pragma once
 
 #include "commom.hpp"
+#include "screen.hpp"
 #include "term.hpp"
 
 namespace uppr::eng {
@@ -18,6 +19,11 @@ public:
      * Function to run the current frame.
      */
     virtual void update(Engine& engine) = 0;
+
+    /**
+     * Function to draw the current frame.
+     */
+    virtual void draw(Engine& engine, term::TermScreen& screen) = 0;
 
     /**
      * Called when the scene becomes the active scene in the engine.

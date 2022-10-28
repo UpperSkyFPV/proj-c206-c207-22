@@ -1,16 +1,17 @@
 #pragma once
 
 #include "scene.hpp"
-#include "term.hpp"
+#include "screen.hpp"
 
 namespace uppr::eng {
 
 class Engine {
 public:
-    Engine(int fps_, std::shared_ptr<term::Term> t)
-        : term{t}, fps{fps_}, period_millis{max_frame_time()} {}
-    Engine(int fps_, std::shared_ptr<term::Term> t, std::shared_ptr<Scene> s)
-        : term{t}, fps{fps_}, period_millis{max_frame_time()} {
+    Engine(int fps_, std::shared_ptr<term::TermScreen> t)
+        : screen{t}, fps{fps_}, period_millis{max_frame_time()} {}
+    Engine(int fps_, std::shared_ptr<term::TermScreen> t,
+           std::shared_ptr<Scene> s)
+        : screen{t}, fps{fps_}, period_millis{max_frame_time()} {
         switch_scene(s);
     }
 
@@ -39,10 +40,19 @@ public:
     /**
      * Get the terminal driver thing.
      */
-    std::shared_ptr<term::Term> get_term() const { return term; }
+    // std::shared_ptr<term::TermScreen> get_screen() const { return screen; }
+
+    /**
+     * Get the size of the screen.
+     */
+    constexpr std::pair<ushort, ushort> get_screen_size() const {
+        return screen->get_size();
+    }
 
     constexpr int get_frame_time() const { return frame_time; }
     constexpr int get_max_frame_time() const { return period_millis; }
+
+    char readc() const { return screen->readc(); }
 
 private:
     /**
@@ -59,7 +69,7 @@ private:
     /**
      * The terminal driver/wrapper thing instance.
      */
-    std::shared_ptr<term::Term> term;
+    std::shared_ptr<term::TermScreen> screen;
 
     /**
      * What FPS to run the engine at (or at least try to).
@@ -74,7 +84,27 @@ private:
     /**
      * The last frame time.
      */
-    int frame_time;
+    int frame_time{};
+
+    /**
+     * The last update time.
+     */
+    int update_time{};
+
+    /**
+     * The last draw time.
+     */
+    int draw_time{};
+
+    /**
+     * The last time during the scene (update_time + draw_time).
+     */
+    int scene_time{};
+
+    /**
+     * The last time during commiting to terminal.
+     */
+    int commit_time{};
 
     /**
      * If the engine is currently running. If this goes false, then the mainloop

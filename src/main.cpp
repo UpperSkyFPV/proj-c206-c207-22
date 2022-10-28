@@ -3,6 +3,7 @@
 #include "except.hpp"
 #include "fmt/color.h"
 #include "loguru.hpp"
+#include "screen.hpp"
 #include "sqlite3.h"
 
 #include <csignal>
@@ -16,7 +17,7 @@
 #include "term/key.hpp"
 #include "term/term.hpp"
 
-std::shared_ptr<uppr::term::Term> term;
+std::shared_ptr<uppr::term::TermScreen> term;
 
 void handle_winch(int sig);
 
@@ -26,7 +27,7 @@ int main(int argc, char **argv) {
     loguru::add_file("./output.log", loguru::Truncate, loguru::Verbosity_9);
     loguru::init(argc, argv);
 
-    term = std::make_shared<uppr::term::Term>(fileno(stdin), stdout);
+    term = std::make_shared<uppr::term::TermScreen>(fileno(stdin), stdout);
     term->set_termios_control(1, 0);
     signal(SIGWINCH, handle_winch);
 
@@ -36,7 +37,7 @@ int main(int argc, char **argv) {
     engine.run();
 
     return 0;
-
+#if 0
     term->clear_term();
 
     const auto [w, h] = term->get_size();
@@ -76,6 +77,7 @@ int main(int argc, char **argv) {
     }
 
     return 0;
+#endif
 }
 
 void handle_winch(int sig) {
