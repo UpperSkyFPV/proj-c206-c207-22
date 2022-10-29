@@ -1,25 +1,15 @@
 #pragma once
 
+#include "box-options.hpp"
 #include "fmt/color.h"
 #include "fmt/core.h"
 #include "pixel.hpp"
 #include "term.hpp"
 #include "transform.hpp"
+
 #include <termios.h>
 
 namespace uppr::term {
-
-struct BoxOptions {
-    Pixel line_left = '|';
-    Pixel line_right = '|';
-    Pixel line_top = '-';
-    Pixel line_bottom = '-';
-
-    Pixel edge_topleft = '+';
-    Pixel edge_topright = '+';
-    Pixel edge_bottomleft = '+';
-    Pixel edge_bottomright = '+';
-};
 
 /**
  * Add a buffer between the terminal driver and user code, so that more
@@ -120,7 +110,8 @@ public:
     /**
      * Draw a box on the given postion with the given size
      */
-    void box(const Transform &tl, usize width, usize height, const BoxOptions &opt);
+    void box(const Transform &tl, usize width, usize height,
+             const BoxOptions &opt);
 
     /**
      * Draw a horizontal line.

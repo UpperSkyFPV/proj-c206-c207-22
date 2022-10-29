@@ -5,31 +5,10 @@
 namespace uppr::term {
 
 /**
- * A transform class is just 2D coordinates, but intended to use for localizing
- * coodinates.
- *
- * Say we have the following screen configuration:
- * ```
- * (0, 0)
- * +--------------------------------------------------+
- * |                                                  |
- * |    +-------------+                               |
- * |    |             |                               |
- * |    | *           |                               |
- * |    |             |                               |
- * |    +-------------+                               |
- * |                                                  |
- * +--------------------------------------------------+
- *                                                    (50, 7)
- * ```
- *
- * To position the litte start, we could use its absoulute coordinates (7, 3),
- * or we could define using its local coordinates (1, 1). The second one is
- * obviously preffered, but to do that we need to know the transform of its
- * parent (the smaller box) and of itself. That is the purpose of this class.
+ * A very simple 2D vector class.
  */
 template <typename T>
-struct BasicTransform {
+struct Vector2 {
     /**
      * Get the x, y coordinates.
      */
@@ -45,15 +24,23 @@ struct BasicTransform {
      */
     constexpr T gety() const noexcept { return y; }
 
-    constexpr BasicTransform operator+(const BasicTransform &o) const noexcept {
+    constexpr Vector2 operator+(const Vector2 &o) const noexcept {
         return {x + o.x, y + o.y};
     }
 
-    constexpr auto operator<=>(const BasicTransform &) const = default;
+    constexpr Vector2 &operator+=(const Vector2 &o) noexcept {
+        x += o.x;
+        y += o.y;
+
+        return *this;
+    }
+
+    constexpr auto operator<=>(const Vector2 &) const = default;
 
     T x{};
     T y{};
 };
 
-using Transform = BasicTransform<int>;
+using Transform = Vector2<int>;
+using Size = Vector2<usize>;
 } // namespace uppr::term

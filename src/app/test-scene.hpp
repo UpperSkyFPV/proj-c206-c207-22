@@ -27,32 +27,13 @@ public:
         }
 
         position += velocity;
-
-        // engine.get_term()->print(position, heigh / 2,
-        // fmt::fg(fmt::color::yellow), "@");
-
-        // engine.get_term()->print(2, 2, "{}/{}us", engine.get_frame_time(),
-        // engine.get_max_frame_time());
     }
 
-    void draw(eng::Engine &engine, term::TermScreen &screen) override {
-        const auto [width, heigh] = screen.get_size();
-
+    void draw(eng::Engine &engine, term::Transform transform,
+              term::TermScreen &screen) override {
         using namespace fmt;
 
-        screen.clear();
-
-        const term::Transform box_position{10, 10};
-        screen.box(box_position, 10, 5, {});
-        screen.print(box_position + term::Transform{2, 1}, "abc");
-
-        screen.setc(position, heigh / 2, {'@', fg(color::green)});
-        screen.print(1, 1, bg(color::dark_blue) | fg(color::ghost_white),
-                     "Term-gram");
-        screen.print(2, 2, "{:06d}/{}us ({:.02f})", engine.get_frame_time(),
-                     engine.get_max_frame_time(),
-                     static_cast<double>(engine.get_frame_time()) /
-                         engine.get_max_frame_time());
+        screen.print(transform, "Hello there!");
     }
 
     void mount(eng::Engine &engine) override { LOG_F(INFO, "mount TestScene"); }

@@ -15,6 +15,8 @@ void Engine::run() {
         // Record when the frame was started
         const auto start = steady_clock::now();
 
+        screen->clear();
+
         if (current_scene) {
             // Run updates on the current scene
             current_scene->update(*this);
@@ -24,7 +26,7 @@ void Engine::run() {
                 duration_cast<microseconds>(update_end - start).count();
 
             // And then draw
-            current_scene->draw(*this, *screen);
+            current_scene->draw(*this, {}, *screen);
 
             const auto draw_end = steady_clock::now();
             draw_time =
