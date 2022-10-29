@@ -34,9 +34,8 @@ int main(int argc, char **argv) {
     signal(SIGWINCH, handle_winch);
 
     const auto initial_scene = std::make_shared<uppr::app::TestScene>();
-    const auto box_scene = std::make_shared<uppr::eng::BoxScene>(
-        uppr::term::Transform{20, 20}, uppr::term::Size{24, 10},
-        uppr::term::BoxOptions{}, initial_scene);
+    const auto box_scene =
+        uppr::eng::BoxScene::make({1, 1}, {60, 10}, {}, initial_scene);
     uppr::eng::Engine engine{30, term, box_scene};
 
     engine.run();

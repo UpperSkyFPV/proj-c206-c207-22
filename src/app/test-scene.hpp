@@ -33,7 +33,18 @@ public:
               term::TermScreen &screen) override {
         using namespace fmt;
 
+        const auto percent = [&](double v) {
+            return v / engine.get_max_frame_time();
+        };
+
         screen.print(transform, "Hello there!");
+        screen.print(transform.move(0, 1),
+                     "{:05d}/{:05d}us ({:02f} | {:02f}+{:02f}+{:02f})",
+                     engine.get_frame_time(), engine.get_max_frame_time(),
+                     percent(engine.get_frame_time()),
+                     percent(engine.get_update_time()),
+                     percent(engine.get_draw_time()),
+                     percent(engine.get_commit_time()));
     }
 
     void mount(eng::Engine &engine) override { LOG_F(INFO, "mount TestScene"); }

@@ -24,6 +24,10 @@ struct Vector2 {
      */
     constexpr T gety() const noexcept { return y; }
 
+    constexpr Vector2 move(T x, T y) const noexcept {
+        return *this + Vector2{x, y};
+    }
+
     constexpr Vector2 operator+(const Vector2 &o) const noexcept {
         return {x + o.x, y + o.y};
     }

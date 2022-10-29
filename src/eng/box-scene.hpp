@@ -3,6 +3,7 @@
 #include "box-options.hpp"
 #include "scene.hpp"
 #include "vector2.hpp"
+#include <memory>
 
 namespace uppr::eng {
 
@@ -24,6 +25,17 @@ public:
         screen.box(transform, size.getx(), size.gety(), opts);
 
         child->draw(engine, origin + term::Transform{1, 1}, screen);
+    }
+
+    void mount(Engine &engine) override { child->mount(engine); }
+
+    void unmount(Engine &engine) override { child->unmount(engine); }
+
+    static std::shared_ptr<Scene> make(const term::Transform &t,
+                                       const term::Size &s,
+                                       const term::BoxOptions &box_opts,
+                                       std::shared_ptr<Scene> child_scene) {
+        return std::make_shared<BoxScene>(t, s, box_opts, child_scene);
     }
 
 private:
