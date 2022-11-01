@@ -19,12 +19,12 @@ public:
 
     void update(Engine &engine) override { child->update(engine); }
 
-    void draw(Engine &engine, term::Transform transform,
+    void draw(Engine &engine, term::Transform transform, term::Size size,
               term::TermScreen &screen) override {
         transform += origin;
         screen.box(transform, size.getx(), size.gety(), opts);
 
-        child->draw(engine, origin + term::Transform{1, 1}, screen);
+        child->draw(engine, origin + term::Transform{1, 1}, size - 1, screen);
     }
 
     void mount(Engine &engine) override { child->mount(engine); }

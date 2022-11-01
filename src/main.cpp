@@ -1,10 +1,14 @@
+#include "app/perf-scene.hpp"
 #include "app/test-scene.hpp"
+#include "chat-scene.hpp"
 #include "eng/box-scene.hpp"
 #include "eng/engine.hpp"
+#include "eng/seq-scene.hpp"
 #include "except.hpp"
 #include "fmt/color.h"
 #include "loguru.hpp"
 #include "screen.hpp"
+#include "sidebar-scene.hpp"
 #include "sqlite3.h"
 
 #include <csignal>
@@ -33,10 +37,12 @@ int main(int argc, char **argv) {
     term->set_termios_control(1, 0);
     signal(SIGWINCH, handle_winch);
 
-    const auto initial_scene = std::make_shared<uppr::app::TestScene>();
-    const auto box_scene =
-        uppr::eng::BoxScene::make({1, 1}, {60, 10}, {}, initial_scene);
-    uppr::eng::Engine engine{30, term, box_scene};
+    const auto scenes = uppr::eng::SeqScene::make();
+    scenes->add_scene(uppr::app::PerfScene::make());
+    scenes->add_scene(
+        uppr::app::SidebarScene::make(uppr::app::ChatScene::make()));
+
+    uppr::eng::Engine engine{30, term, scenes};
 
     engine.run();
 

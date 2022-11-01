@@ -24,7 +24,7 @@ public:
     /**
      * Function to draw the current frame.
      */
-    virtual void draw(Engine &engine, term::Transform transform,
+    virtual void draw(Engine &engine, term::Transform transform, term::Size size,
                       term::TermScreen &screen) = 0;
 
     /**

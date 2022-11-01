@@ -1,7 +1,9 @@
 #pragma once
 
+#include "eventpp/eventdispatcher.h"
 #include "scene.hpp"
 #include "screen.hpp"
+#include "vector2.hpp"
 
 namespace uppr::eng {
 
@@ -27,13 +29,15 @@ namespace uppr::eng {
  *                          | commit time |
  *                          |             |
  * wait excess time  <------+-------------+
- *                  
- *                  
- *                  
+ *
+ *
+ *
  * ```
  */
 class Engine {
 public:
+    using EventBus = eventpp::EventDispatcher<char, void(char)>;
+
     Engine(int fps_, std::shared_ptr<term::TermScreen> t)
         : screen{t}, fps{fps_}, period_millis{max_frame_time()} {}
     Engine(int fps_, std::shared_ptr<term::TermScreen> t,
@@ -67,9 +71,7 @@ public:
     /**
      * Get the size of the screen.
      */
-    constexpr std::pair<ushort, ushort> get_screen_size() const {
-        return screen->get_size();
-    }
+    constexpr term::Size get_screen_size() const { return screen->get_size(); }
 
     /**
      * Get the time that the last frame took.
@@ -98,11 +100,18 @@ public:
 
     char readc() const { return screen->readc(); }
 
+    EventBus &get_eventbus() { return eventbus; }
+
 private:
     /**
      * Get the maximum frame time in microseconds.
      */
     constexpr int max_frame_time() const { return 1000000 / fps; }
+
+    /**
+     * Poll the stdin for keys pressed and transform it to events.
+     */
+    void poll_events();
 
 private:
     /**
@@ -114,6 +123,11 @@ private:
      * The terminal driver/wrapper thing instance.
      */
     std::shared_ptr<term::TermScreen> screen;
+
+    /**
+     * Event queue for events (duh)
+     */
+    EventBus eventbus;
 
     /**
      * What FPS to run the engine at (or at least try to).

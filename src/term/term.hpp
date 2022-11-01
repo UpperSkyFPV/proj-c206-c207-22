@@ -5,6 +5,7 @@
 #include "fmt/core.h"
 #include "term/key.hpp"
 #include "termios.hpp"
+#include "vector2.hpp"
 #include <cstdio>
 #include <unistd.h>
 #include <vector>
@@ -185,7 +186,7 @@ public:
     /**
      * Get the width and height of the terminal.
      */
-    constexpr std::pair<ushort, ushort> get_size() const {
+    constexpr Size get_size() const {
         return {width, height};
     }
 

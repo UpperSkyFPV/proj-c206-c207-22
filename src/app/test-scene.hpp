@@ -29,7 +29,7 @@ public:
         position += velocity;
     }
 
-    void draw(eng::Engine &engine, term::Transform transform,
+    void draw(eng::Engine &engine, term::Transform transform, term::Size size,
               term::TermScreen &screen) override {
         using namespace fmt;
 
@@ -38,13 +38,12 @@ public:
         };
 
         screen.print(transform, "Hello there!");
-        screen.print(transform.move(0, 1),
-                     "{:05d}/{:05d}us ({:02f} | {:02f}+{:02f}+{:02f})",
-                     engine.get_frame_time(), engine.get_max_frame_time(),
-                     percent(engine.get_frame_time()),
-                     percent(engine.get_update_time()),
-                     percent(engine.get_draw_time()),
-                     percent(engine.get_commit_time()));
+        screen.print(
+            transform.move(0, 1),
+            "{:05d}/{:05d}us ({:02f} | {:02f}+{:02f}+{:02f})",
+            engine.get_frame_time(), engine.get_max_frame_time(),
+            percent(engine.get_frame_time()), percent(engine.get_update_time()),
+            percent(engine.get_draw_time()), percent(engine.get_commit_time()));
     }
 
     void mount(eng::Engine &engine) override { LOG_F(INFO, "mount TestScene"); }

@@ -13,7 +13,8 @@ INC_DIRS := $(shell find $(SRC_DIRS) -type d) \
 			./vendor/sqlite \
 			./vendor/loguru \
 			./vendor/tl/include \
-			./vendor/fmt/include
+			./vendor/fmt/include \
+			./vendor/eventpp/include
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 DEBUGFLAGS ?= -g

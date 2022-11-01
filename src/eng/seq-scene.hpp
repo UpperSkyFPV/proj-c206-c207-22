@@ -19,12 +19,12 @@ public:
         }
     }
 
-    void draw(Engine &engine, term::Transform transform,
+    void draw(Engine &engine, term::Transform transform, term::Size size,
               term::TermScreen &screen) override {
         transform += origin;
 
         for (const auto &child : children) {
-            child->draw(engine, transform, screen);
+            child->draw(engine, transform, size, screen);
         }
     }
 
@@ -42,6 +42,10 @@ public:
 
     void add_scene(std::shared_ptr<Scene> new_child) {
         children.push_back(new_child);
+    }
+
+    static std::shared_ptr<SeqScene> make() {
+        return std::make_shared<SeqScene>();
     }
 
 private:

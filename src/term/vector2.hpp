@@ -28,8 +28,26 @@ struct Vector2 {
         return *this + Vector2{x, y};
     }
 
+    constexpr Vector2 operator-() const noexcept { return {-x, -y}; }
+
     constexpr Vector2 operator+(const Vector2 &o) const noexcept {
         return {x + o.x, y + o.y};
+    }
+
+    constexpr Vector2 operator-(const Vector2 &o) const noexcept {
+        return {x - o.x, y - o.y};
+    }
+
+    constexpr Vector2 operator+(T scalar) const noexcept {
+        return {x + scalar, y + scalar};
+    }
+
+    constexpr Vector2 operator-(T scalar) const noexcept {
+        return {x - scalar, y - scalar};
+    }
+
+    constexpr Vector2 operator/(const Vector2 &o) const noexcept {
+        return {x / o.x, y / o.y};
     }
 
     constexpr Vector2 &operator+=(const Vector2 &o) noexcept {

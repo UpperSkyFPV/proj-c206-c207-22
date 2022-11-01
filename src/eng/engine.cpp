@@ -1,4 +1,5 @@
 #include "engine.hpp"
+#include "key.hpp"
 #include <bits/chrono.h>
 #include <chrono>
 #include <thread>
@@ -15,6 +16,8 @@ void Engine::run() {
         // Record when the frame was started
         const auto start = steady_clock::now();
 
+        poll_events();
+
         screen->clear();
 
         if (current_scene) {
@@ -26,7 +29,7 @@ void Engine::run() {
                 duration_cast<microseconds>(update_end - start).count();
 
             // And then draw
-            current_scene->draw(*this, {}, *screen);
+            current_scene->draw(*this, {}, screen->get_size(), *screen);
 
             const auto draw_end = steady_clock::now();
             draw_time =
@@ -60,5 +63,19 @@ void Engine::switch_scene(std::shared_ptr<Scene> s) {
 
     // Call mount hook after adding
     if (current_scene) current_scene->mount(*this);
+}
+
+void Engine::poll_events() {
+    while (true) {
+        const auto c = screen->readc();
+        if (c == 0) break;
+
+        // Ctrl+Q is quit, always
+        if (term::is_ctrl(c, 'q')) finalize();
+
+        LOG_F(9, "received key: '{}' ({:d}, {:d})", c, c, term::ctrl(c));
+
+        eventbus.dispatch(c, c);
+    }
 }
 } // namespace uppr::eng
