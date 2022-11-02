@@ -1,6 +1,7 @@
 #pragma once
 
 #include "conn.hpp"
+#include "dao/chat.hpp"
 #include "eng/engine.hpp"
 #include "eng/scene.hpp"
 #include "fmt/color.h"
@@ -8,35 +9,34 @@
 #include "models/chat.hpp"
 #include "stmt.hpp"
 #include "vector2.hpp"
+#include <memory>
 #include <string_view>
 #include <vector>
 
 namespace uppr::app {
 
+/**
+ * This scene is the sidebar on the left of the viewport.
+ *
+ * In this scene we show all of the chats owned by the user (which means that we
+ * have _read access_ to the database `Chat` table). It is possible to hide the
+ * sidebar completally by using the `ctrl+n` keybind.
+ *
+ * Selecting each of the chats is done using the `c` key and cycle all of them.
+ */
 class SidebarScene : public eng::Scene {
 public:
+    /**
+     * We need a scene to live on the right of us, and a connection to the
+     * database.
+     */
     SidebarScene(std::shared_ptr<eng::Scene> c,
                  std::shared_ptr<db::Connection> db_)
-        : db{db_}, content{c} {}
+        : chat_dao{db_}, content{c} {}
 
     void update(eng::Engine &engine) override {
-        if (need_to_get_chats_from_db) {
-            db->execute_many("SELECT * FROM Chat;", [this](
-                                                        const db::PreparedStmt
-                                                            &stmt) {
-                const auto n = stmt.column_count();
-                const auto id = stmt.column_int(0);
-                const auto name = stmt.column_text(1);
-                const auto descr = stmt.column_text(2);
-
-                chats.push_back({id, std::string{name}, std::string{descr}});
-
-                LOG_F(INFO, "stmt[{}]@{}{{ {}, {}, {} }}", n, fmt::ptr(&stmt),
-                      id, name, descr);
-            });
-
-            need_to_get_chats_from_db = false;
-        }
+        // Update the chat if needed
+        if (need_to_get_chats_from_db) update_chat();
 
         content->update(engine);
     }
@@ -45,6 +45,7 @@ public:
               term::TermScreen &screen) override {
         using namespace fmt;
 
+        // The sidebar has the size of 1/3 of the screen width
         const auto width = show_sidebar ? size.getx() / 3 : size.getx();
         if (show_sidebar) {
             draw_list(engine, transform, {width, size.gety()}, screen);
@@ -57,14 +58,24 @@ public:
     }
 
     void mount(eng::Engine &engine) override {
-        j_handle = engine.get_eventbus().appendListener(
+        // Event handler for the `ctrl+n` key
+        hide_sidebar_keybind_handle = engine.get_eventbus().appendListener(
             term::ctrl('n'), [this](char c) { show_sidebar = !show_sidebar; });
+
+        cycle_chat_keybind_handle =
+            engine.get_eventbus().appendListener('c', [this](char c) {
+                selected_chat = (selected_chat + 1) % chats.size();
+                LOG_F(7, "selected_chat={}", selected_chat);
+            });
 
         content->mount(engine);
     }
 
     void unmount(eng::Engine &engine) override {
-        engine.get_eventbus().removeListener(term::ctrl('c'), j_handle);
+        // Remove the event handler for the `ctrl+n` key
+        engine.get_eventbus().removeListener(term::ctrl('n'),
+                                             hide_sidebar_keybind_handle);
+        engine.get_eventbus().removeListener('c', cycle_chat_keybind_handle);
 
         content->unmount(engine);
     }
@@ -76,17 +87,21 @@ public:
     }
 
 private:
+    /**
+     * Draw the list of chats.
+     */
     void draw_list(eng::Engine &engine, term::Transform transform,
                    term::Size size, term::TermScreen &screen) {
         using namespace fmt;
 
         auto t = transform.move(1, 0);
+        usize idx{};
         for (const auto &item : chats) {
             // Print the title of the chat (its name) in bold
             auto name_style = fg(color::white) | emphasis::bold;
             // If the current chat is the selected one, then mark it in some
             // visible manner
-            if (item.id == 1) { name_style |= emphasis::reverse; }
+            if (idx == selected_chat) { name_style |= emphasis::reverse; }
             screen.print(t, name_style, "{}", item.name);
 
             // Print at the right corner the id of the chat
@@ -110,16 +125,25 @@ private:
 
             // Move to the next line before the next iteration
             t += term::Transform{0, 1};
+            idx++;
         }
     }
 
+    void update_chat() {
+        chats = chat_dao.all();
+
+        need_to_get_chats_from_db = false;
+    }
+
 private:
-    std::shared_ptr<db::Connection> db;
+    dao::ChatDAO chat_dao;
 
     std::shared_ptr<eng::Scene> content;
-    eng::Engine::EventBus::Handle j_handle;
+    eng::Engine::EventBus::Handle hide_sidebar_keybind_handle;
+    eng::Engine::EventBus::Handle cycle_chat_keybind_handle;
 
     std::vector<models::ChatModel> chats;
+    usize selected_chat{};
 
     bool need_to_get_chats_from_db{true};
 

@@ -4,6 +4,9 @@
 
 namespace uppr::term {
 
+/**
+ * Options from when creating a box.
+ */
 struct BoxOptions {
     Pixel line_left = '|';
     Pixel line_right = '|';

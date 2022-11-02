@@ -19,7 +19,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 DEBUGFLAGS ?= -g
 RELEASEFLAGS ?= -O2 -Werror
-CMMFLAGS ?= $(INC_FLAGS) -MMD -MP $(DEBUGFLAGS) -Wall
+CMMFLAGS ?= $(INC_FLAGS) -MMD -MP $(RELEASEFLAGS) -Wall
 CPPFLAGS ?= -std=c++20 -DLOGURU_USE_FMTLIB=1
 LDFLAGS ?= -lpthread -ldl -lm -L./vendor/fmt/build -lfmt
 

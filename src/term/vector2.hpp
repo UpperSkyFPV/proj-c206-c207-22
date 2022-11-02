@@ -24,28 +24,49 @@ struct Vector2 {
      */
     constexpr T gety() const noexcept { return y; }
 
+    /**
+     * Add to another vector.
+     */
     constexpr Vector2 move(T x, T y) const noexcept {
         return *this + Vector2{x, y};
     }
 
+    /**
+     * Negate the vector (which means negate both x and y).
+     */
     constexpr Vector2 operator-() const noexcept { return {-x, -y}; }
 
+    /**
+     * Add to another vector.
+     */
     constexpr Vector2 operator+(const Vector2 &o) const noexcept {
         return {x + o.x, y + o.y};
     }
 
+    /**
+     * Subtract another vector.
+     */
     constexpr Vector2 operator-(const Vector2 &o) const noexcept {
         return {x - o.x, y - o.y};
     }
 
+    /**
+     * Add to a scalar.
+     */
     constexpr Vector2 operator+(T scalar) const noexcept {
         return {x + scalar, y + scalar};
     }
 
+    /**
+     * Subtract a scalar.
+     */
     constexpr Vector2 operator-(T scalar) const noexcept {
         return {x - scalar, y - scalar};
     }
 
+    /**
+     * Divide by another vector (is this actually correct?)
+     */
     constexpr Vector2 operator/(const Vector2 &o) const noexcept {
         return {x / o.x, y / o.y};
     }

@@ -98,8 +98,14 @@ public:
      */
     constexpr int get_max_frame_time() const { return period_millis; }
 
+    /**
+     * Read a single character from the screen.
+     */
     char readc() const { return screen->readc(); }
 
+    /**
+     * Get the event bus in order to add and remove listeners.
+     */
     EventBus &get_eventbus() { return eventbus; }
 
 private:

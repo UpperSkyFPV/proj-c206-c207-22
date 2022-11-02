@@ -39,6 +39,7 @@ using usize = std::size_t;
 using std::array;
 using std::span;
 using std::string_view;
+using std::shared_ptr;
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;

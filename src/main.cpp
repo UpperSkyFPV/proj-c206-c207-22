@@ -1,5 +1,4 @@
 #include "app/perf-scene.hpp"
-#include "app/test-scene.hpp"
 #include "chat-scene.hpp"
 #include "eng/box-scene.hpp"
 #include "eng/engine.hpp"
