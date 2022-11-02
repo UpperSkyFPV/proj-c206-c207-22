@@ -6,6 +6,7 @@
 #include "sqlite3.h"
 #include "tl/expected.hpp"
 #include "tl/function_ref.hpp"
+#include <memory>
 
 namespace uppr::db {
 
@@ -25,6 +26,14 @@ public:
      * @param filename The name of the database file, defaults to in-memory.
      */
     static Connection open(const char *filename = ":memory:");
+
+    /**
+     * Open a connection.
+     *
+     * @param filename The name of the database file, defaults to in-memory.
+     */
+    static std::shared_ptr<Connection>
+    open_ptr(const char *filename = ":memory:");
 
     /**
      * Close database on destruction.

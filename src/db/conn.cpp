@@ -5,6 +5,7 @@
 #include "loguru.hpp"
 #include "tl/expected.hpp"
 #include <cctype>
+#include <memory>
 
 namespace uppr::db {
 
@@ -16,6 +17,16 @@ Connection Connection::open(const char *filename) {
     if (!r.is_ok()) throw DatabaseError{"Error opening database", r};
 
     return Connection{db};
+}
+
+std::shared_ptr<Connection> Connection::open_ptr(const char *filename) {
+    sqlite3 *db;
+
+    // Open the database and check for error
+    Result r = sqlite3_open(filename, &db);
+    if (!r.is_ok()) throw DatabaseError{"Error opening database", r};
+
+    return std::shared_ptr<Connection>{new Connection{db}};
 }
 
 Connection::~Connection() {

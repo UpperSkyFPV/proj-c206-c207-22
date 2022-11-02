@@ -37,10 +37,18 @@ int main(int argc, char **argv) {
     term->set_termios_control(1, 0);
     signal(SIGWINCH, handle_winch);
 
+    const auto database = uppr::db::Connection::open_ptr("db");
+    uppr::except::wrap_fatal_exception([&database] {
+        const auto source = uppr::file::read_file_text("res/tables-safe.sql");
+        database->execute_many(source, [](const auto &stmt) {
+            LOG_F(8, "Executed statement@{}", fmt::ptr(&stmt));
+        });
+    });
+
     const auto scenes = uppr::eng::SeqScene::make();
     scenes->add_scene(uppr::app::PerfScene::make());
-    scenes->add_scene(
-        uppr::app::SidebarScene::make(uppr::app::ChatScene::make()));
+    scenes->add_scene(uppr::app::SidebarScene::make(
+        uppr::app::ChatScene::make(database), database));
 
     uppr::eng::Engine engine{30, term, scenes};
 

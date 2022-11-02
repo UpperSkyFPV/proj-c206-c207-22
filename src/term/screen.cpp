@@ -121,12 +121,18 @@ void TermScreen::vprint(int x, int y, fmt::text_style style,
 }
 
 void TermScreen::update_size() {
+    LOG_SCOPE_FUNCTION(9);
+
     term.update_size();
     update_buffer_size();
 }
 
 void TermScreen::clear() {
-    const auto [w, h] = term.get_size();
+    auto [w, h] = term.get_size();
+
+    // Dont make it zero!
+    w = std::max(w, 1UL);
+    h = std::max(h, 1UL);
 
     buffer.resize(w * h);
     std::ranges::fill(buffer, Pixel{});
@@ -135,8 +141,6 @@ void TermScreen::clear() {
 }
 
 void TermScreen::update_buffer_size() {
-    LOG_SCOPE_FUNCTION(9);
-
     clear();
 }
 } // namespace uppr::term
