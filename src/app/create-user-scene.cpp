@@ -75,14 +75,17 @@ void CreateUserScene::confirm(term::Transform transform,
                               term::TermScreen &screen) {
     switch (selected_item) {
     case Item::username: {
+        create_data.username.clear();
         const auto data = screen.inputline(transform.move(1, 2), 28);
         create_data.username = data;
     } break;
     case Item::addr_host: {
+        create_data.addr_host.clear();
         const auto data = screen.inputline(transform.move(1, 6), 28);
         create_data.addr_host = data;
     } break;
     case Item::addr_port: {
+        create_data.addr_port.clear();
         const auto data = screen.inputline(transform.move(1, 10), 28);
         create_data.addr_port = data;
     } break;

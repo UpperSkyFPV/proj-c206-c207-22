@@ -138,14 +138,8 @@ void Term::fwrite(FILE *f, string_view text, bool flush) const {
 }
 
 char Term::readc() const {
-    const auto start = std::chrono::steady_clock::now();
     char c;
     ::read(in, &c, 1);
-    const auto end = std::chrono::steady_clock::now();
-
-    LOG_F(9, "readc time = {:>10}",
-          std::chrono::duration_cast<std::chrono::microseconds>(end - start)
-              .count());
 
     return c;
 }
