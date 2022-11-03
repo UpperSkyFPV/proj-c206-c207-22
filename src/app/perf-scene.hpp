@@ -19,12 +19,24 @@ public:
               term::TermScreen &screen) override {
         using namespace fmt;
 
-        const auto f = engine.get_frame_time();
-        const auto m = engine.get_max_frame_time();
-        const auto p = (static_cast<double>(f) / m) * 100;
+        const auto max_frame = engine.get_max_frame_time();
+        const auto frame = engine.get_frame_time();
+        const auto update = engine.get_update_time();
+        const auto draw = engine.get_draw_time();
+        const auto commit = engine.get_commit_time();
 
-        screen.print(transform.move(size.getx() - 30, 0),
-                     "{:05d}/{:05d}us ({:0.2f}%)", f, m, p);
+        const auto percent = [&](double time) {
+            return (time / max_frame) * 100;
+        };
+
+        const auto pframe = percent(frame);
+        const auto pupdate = percent(update);
+        const auto pdraw = percent(draw);
+        const auto pcommit = percent(commit);
+
+        screen.print(transform.move(size.getx() - 60, 0),
+                     "{:05d}/{:05d}us ({:0.2f}%, {:0.2f}%, {:0.2f}%, {:0.2f}%)",
+                     frame, max_frame, pframe, pupdate, pdraw, pcommit);
     }
 
     /**

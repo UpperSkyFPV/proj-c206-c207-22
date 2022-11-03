@@ -2,6 +2,7 @@
 #include "term.hpp"
 #include "term/termios.hpp"
 
+#include <chrono>
 #include <unistd.h>
 
 namespace uppr::term {
@@ -15,14 +16,7 @@ Term::Term(int input_file_desc, FILE *output_file)
     uncook_termios();
 }
 
-Term::~Term() {
-    restore_termios();
-
-    disable_alternative();
-    restore_screen();
-    restore_cursor();
-    show_cursor();
-}
+Term::~Term() { cook_termios(); }
 
 void Term::restore_termios() const { set_termios(in, old_termios); }
 
@@ -38,11 +32,12 @@ void Term::clear_term() const { fwrite(out, "\x1B[2J"sv, true); }
 
 void Term::move_cursor(usize x, usize y) const {
     // x and y are inverted in the command
-    fprintf(out, "\x1B[%lu;%luH", y, x);
+    fprintf(out, "\x1B[%lu;%luH", y + 1, x + 1);
     fflush(out);
 }
 
 void Term::set_termios_control(cc_t time, cc_t min) {
+    LOG_F(WARNING, "set_termios_control {}, {}", time, min);
     in_time = time;
     in_min = min;
 
@@ -62,6 +57,15 @@ void Term::save_screen() const { fwrite(out, "\x1B[?47h"sv, true); }
 
 void Term::restore_screen() const { fwrite(out, "\x1B[?47l"sv, true); }
 
+void Term::cook_termios() {
+    restore_termios();
+
+    disable_alternative();
+    restore_screen();
+    restore_cursor();
+    show_cursor();
+}
+
 void Term::uncook_termios() {
     uncook_current_termios_s();
     set_termios_control(in_time, in_min);
@@ -73,6 +77,26 @@ void Term::uncook_termios() {
     save_cursor();
     save_screen();
     enable_alternative();
+}
+
+void Term::cook_termios_with_preserved_alt() {
+    LOG_SCOPE_FUNCTION(9);
+    restore_termios();
+
+    restore_cursor();
+    show_cursor();
+}
+
+void Term::uncook_termios_and_preserve_alt() {
+    LOG_SCOPE_FUNCTION(9);
+    uncook_current_termios_s();
+    set_termios_control(in_time, in_min);
+
+    commit_termios();
+
+    // Push the alternate, so that we can do whatever we want.
+    hide_cursor();
+    save_cursor();
 }
 
 void Term::uncook_current_termios_s() {
@@ -114,8 +138,14 @@ void Term::fwrite(FILE *f, string_view text, bool flush) const {
 }
 
 char Term::readc() const {
+    const auto start = std::chrono::steady_clock::now();
     char c;
     ::read(in, &c, 1);
+    const auto end = std::chrono::steady_clock::now();
+
+    LOG_F(9, "readc time = {:>10}",
+          std::chrono::duration_cast<std::chrono::microseconds>(end - start)
+              .count());
 
     return c;
 }

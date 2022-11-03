@@ -127,6 +127,15 @@ public:
     void vprint(int x, int y, fmt::text_style style, fmt::string_view fmt,
                 fmt::format_args args);
 
+    /**
+     * Read a line from the user. **DANGEROUS**!
+     *
+     * This function completally removes the spacial _uncooked_ handling of the
+     * terminal for getting text input. If the user sends a signal like `ctrl+c`
+     * while this is active, then the program dies horribly!
+     */
+    std::string inputline(Transform t, usize max_length);
+
 public:
     /**
      * Set the delay and minimum threshold for input.
@@ -147,6 +156,31 @@ public:
      * Clear the screen.
      */
     void clear();
+
+    /**
+     * Exit uncooked mode for text input.
+     */
+    void danger_uncook() { term.danger_uncook(); }
+
+    /**
+     * Enter uncooked mode for text input.
+     */
+    void danger_cook() { term.danger_cook(); }
+
+    /**
+     * Exit uncooked mode for text input.
+     */
+    void danger_uncook_alt() { term.danger_uncook_and_preserve_alt(); }
+
+    /**
+     * Enter uncooked mode for text input.
+     */
+    void danger_cook_alt() { term.danger_cook_with_preserved_alt(); }
+
+    /**
+     * Move the cursor directly inside the screen.
+     */
+    void raw_move_cursor(usize x, usize y) const { term.move_cursor(x, y); }
 
 private:
     /**

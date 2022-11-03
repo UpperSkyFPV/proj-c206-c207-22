@@ -3,6 +3,8 @@
 #include "screen.hpp"
 #include <algorithm>
 #include <bits/ranges_algo.h>
+#include <iostream>
+#include <string>
 
 namespace uppr::term {
 void TermScreen::commit() {
@@ -120,6 +122,25 @@ void TermScreen::vprint(int x, int y, fmt::text_style style,
     }
 }
 
+std::string TermScreen::inputline(Transform t, usize max_lenght) {
+    danger_cook_alt();
+    const auto input_transform = t;
+    raw_move_cursor(input_transform.getx(), input_transform.gety());
+
+    std::string str;
+    str.resize(max_lenght);
+    term.read(str);
+
+    // Trim on the ending newline
+    const auto newline = str.find('\n');
+    if (newline != std::string::npos)
+        str.resize(newline);
+
+    danger_uncook_alt();
+
+    return str;
+}
+
 void TermScreen::update_size() {
     LOG_SCOPE_FUNCTION(9);
 
@@ -140,7 +161,5 @@ void TermScreen::clear() {
     mark_dirty();
 }
 
-void TermScreen::update_buffer_size() {
-    clear();
-}
+void TermScreen::update_buffer_size() { clear(); }
 } // namespace uppr::term

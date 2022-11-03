@@ -2,10 +2,11 @@
 #include "chat-scene.hpp"
 #include "eng/box-scene.hpp"
 #include "eng/engine.hpp"
-#include "eng/seq-scene.hpp"
+#include "eng/stack-scene.hpp"
 #include "except.hpp"
 #include "fmt/color.h"
 #include "loguru.hpp"
+#include "root.hpp"
 #include "screen.hpp"
 #include "sidebar-scene.hpp"
 #include "sqlite3.h"
@@ -34,27 +35,9 @@ int main(int argc, char **argv) {
     loguru::init(argc, argv);
 
     term = std::make_shared<uppr::term::TermScreen>(fileno(stdin), stdout);
-    term->set_termios_control(1, 0);
     signal(SIGWINCH, handle_winch);
 
-    const auto database = uppr::db::Connection::open_ptr("db");
-    uppr::except::wrap_fatal_exception([&database] {
-        const auto source = uppr::file::read_file_text("res/tables-safe.sql");
-        database->execute_many(source, [](const auto &stmt) {
-            LOG_F(8, "Executed statement@{}", fmt::ptr(&stmt));
-        });
-    });
-
-    const auto state = std::make_shared<uppr::app::AppState>(database);
-
-    const auto scenes = uppr::eng::SeqScene::make();
-    scenes->add_scene(uppr::app::PerfScene::make());
-    scenes->add_scene(uppr::app::SidebarScene::make(
-        uppr::app::ChatScene::make(database), state));
-
-    uppr::eng::Engine engine{30, term, scenes};
-
-    engine.run();
+    uppr::app::start_app(term);
 
     return 0;
 }

@@ -78,6 +78,27 @@ struct Vector2 {
         return *this;
     }
 
+    constexpr Vector2 &operator+=(T scalar) noexcept {
+        x += scalar;
+        y += scalar;
+
+        return *this;
+    }
+
+    constexpr Vector2 &operator-=(const Vector2 &o) noexcept {
+        x -= o.x;
+        y -= o.y;
+
+        return *this;
+    }
+
+    constexpr Vector2 &operator-=(T scalar) noexcept {
+        x -= scalar;
+        y -= scalar;
+
+        return *this;
+    }
+
     constexpr auto operator<=>(const Vector2 &) const = default;
 
     T x{};

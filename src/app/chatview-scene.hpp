@@ -56,8 +56,13 @@ public:
     }
 
     void mount(eng::Engine &engine) override {
-        cycle_chat_keybind_handle = engine.get_eventbus().appendListener(
-            'c', [this](char c) { state->select_next_chat(); });
+        LOG_F(5, "Mount for chatview scene");
+
+        cycle_chat_keybind_handle =
+            engine.get_eventbus().appendListener('c', [this](char c) {
+                const auto s = state->select_next_chat();
+                LOG_F(7, "Selected next chat: {}", s);
+            });
     }
 
     void unmount(eng::Engine &engine) override {

@@ -74,6 +74,11 @@ public:
      */
     void commit_termios(bool flush = true) const;
 
+    void danger_uncook() { uncook_termios(); }
+    void danger_cook() { cook_termios(); }
+    void danger_uncook_and_preserve_alt() { uncook_termios_and_preserve_alt(); }
+    void danger_cook_with_preserved_alt() { cook_termios_with_preserved_alt(); }
+
 private:
     // private termios control functions
 
@@ -111,6 +116,23 @@ private:
      * Do the full sequence of configurations to 'uncook' the terminal.
      */
     void uncook_termios();
+
+    /**
+     * Do the full sequence of configurations to 'uncook' the terminal.
+     */
+    void cook_termios();
+
+    /**
+     * Do the full sequence of configurations to 'uncook' the terminal without
+     * popping the alternate buffer.
+     */
+    void uncook_termios_and_preserve_alt();
+
+    /**
+     * Do the full sequence of configurations to 'cook' the terminal without
+     * popping the alternate buffer.
+     */
+    void cook_termios_with_preserved_alt();
 
     /**
      * Setup the `current_termios` struct to be 'uncooked'.
@@ -186,9 +208,7 @@ public:
     /**
      * Get the width and height of the terminal.
      */
-    constexpr Size get_size() const {
-        return {width, height};
-    }
+    constexpr Size get_size() const { return {width, height}; }
 
 private:
     /**
