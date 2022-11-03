@@ -4,7 +4,9 @@
 #include "dao/address.hpp"
 #include "dao/chat.hpp"
 #include "dao/user.hpp"
+#include "models/address.hpp"
 #include "models/chat.hpp"
+#include "models/user.hpp"
 #include <algorithm>
 #include <functional>
 #include <memory>
@@ -15,8 +17,8 @@ namespace uppr::app {
 
 class AppState {
 public:
-    AppState(shared_ptr<db::Connection> db)
-        : chat_dao{db}, address_dao{db}, user_dao{db} {}
+    AppState(shared_ptr<db::Connection> db_)
+        : db{db_}, chat_dao{db_}, address_dao{db_}, user_dao{db_} {}
 
 public:
     /**
@@ -60,7 +62,7 @@ public:
     /**
      * Get all chats.
      */
-    const std::vector<models::ChatModel>& get_chats() const { return chats; }
+    const std::vector<models::ChatModel> &get_chats() const { return chats; }
 
     /**
      * Get the chat at the given index.
@@ -83,6 +85,24 @@ public:
      */
     void fetch_chats() { chats = chat_dao.all(); }
 
+    /**
+     * Update the list of users with new values from the database
+     */
+    void fetch_users() { users = user_dao.all(); }
+
+    /**
+     * Insert a new user into the database.
+     */
+    void insert_new_user(models::UserModel user,
+                         const models::AddressModel &address) {
+        address_dao.insert(address);
+        user.user_address = db->last_inserted_id();
+
+        user_dao.insert(user);
+
+        fetch_users();
+    }
+
 private:
     /**
      * The index of the currently selected chat. This will be negative if no
@@ -94,6 +114,16 @@ private:
      * Store all of the chats.
      */
     std::vector<models::ChatModel> chats;
+
+    /**
+     * Store all of the users.
+     */
+    std::vector<models::UserModel> users;
+
+    /**
+     * Store a reference to the database connection.
+     */
+    shared_ptr<db::Connection> db;
 
     /**
      * DAO for the chats.

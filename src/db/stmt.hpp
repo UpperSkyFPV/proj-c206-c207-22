@@ -77,9 +77,14 @@ public:
     string_view column_text(usize idx) const;
 
     /**
-     * Bind a parameter
+     * Bind an integer parameter.
      */
     void bind_int(usize idx, int value) const;
+
+    /**
+     * Bind a text parameter.
+     */
+    void bind_text(usize idx, string_view value) const;
 
 private:
     /**

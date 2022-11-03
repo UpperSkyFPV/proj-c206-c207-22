@@ -66,4 +66,10 @@ void PreparedStmt::bind_int(usize idx, int value) const {
     if (result != SQLITE_OK)
         throw DatabaseError{"Error binding integer value", result};
 }
+
+void PreparedStmt::bind_text(usize idx, string_view value) const {
+    const auto result = sqlite3_bind_text(stmt, idx, value.data(), value.size(), SQLITE_TRANSIENT);
+    if (result != SQLITE_OK)
+        throw DatabaseError{"Error binding text value", result};
+}
 } // namespace uppr::db

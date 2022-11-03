@@ -19,5 +19,13 @@ public:
     std::vector<models::UserModel> all() const {
         return select_with<models::UserModel>("SELECT * FROM User");
     }
+
+    void insert(const models::UserModel &m) const {
+        const auto stmt =
+            db->prepare("INSERT INTO User(name, user_address) VALUES (?, ?)");
+        stmt.bind_text(1, m.name);
+        stmt.bind_int(2, m.user_address);
+        stmt.step();
+    }
 };
 } // namespace uppr::dao

@@ -25,5 +25,13 @@ public:
 
         return models::AddressModel::from_row(stmt);
     }
+
+    void insert(const models::AddressModel &m) const {
+        const auto stmt =
+            db->prepare("INSERT INTO Address(host, port) VALUES (?, ?)");
+        stmt.bind_text(1, m.host);
+        stmt.bind_int(2, m.port);
+        stmt.step();
+    }
 };
 } // namespace uppr::dao

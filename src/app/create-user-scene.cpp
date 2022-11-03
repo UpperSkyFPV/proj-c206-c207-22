@@ -2,6 +2,8 @@
 #include "event.hpp"
 #include "fmt/color.h"
 #include "vector2.hpp"
+
+#include <charconv>
 #include <string_view>
 
 namespace uppr::app {
@@ -124,15 +126,17 @@ void CreateUserScene::confirm(term::Transform transform,
         create_data.addr_port = data;
     } break;
     case Item::confirm: {
-        LOG_F(INFO, "Confirming!");
+        LOG_F(INFO, "Saving! '{}', '{}', '{}'", create_data.username,
+              create_data.addr_host, create_data.addr_port);
+
+        state->insert_new_user({-1, create_data.username, -1},
+                               {-1, create_data.addr_host,
+                                std::atoi(create_data.addr_port.c_str())});
         create_data.reset();
     } break;
     }
 
     select_next_item();
-
-    LOG_F(INFO, "Reading things! '{}', '{}', '{}'", create_data.username,
-          create_data.addr_host, create_data.addr_port);
 
     wants_input = false;
 }

@@ -67,9 +67,17 @@ public:
      */
     std::pair<PreparedStmt, Result> execute_one(string_view sql) const;
 
+    /**
+     * Prepare and execute many SQL statements separated by `;`.
+     */
     Result
     execute_many(string_view sql,
                  tl::function_ref<void(const PreparedStmt &)> callback) const;
+
+    /**
+     * Get the id of the last inserted row.
+     */
+    int last_inserted_id() const { return sqlite3_last_insert_rowid(db); }
 
 public:
     /**
