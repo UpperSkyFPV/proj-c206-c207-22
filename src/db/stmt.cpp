@@ -44,9 +44,7 @@ Result PreparedStmt::execute() const {
     return step();
 }
 
-usize PreparedStmt::column_count() const {
-    return sqlite3_column_count(stmt);
-}
+usize PreparedStmt::column_count() const { return sqlite3_column_count(stmt); }
 
 string_view PreparedStmt::column_name(usize idx) const {
     return sqlite3_column_name(stmt, idx);
@@ -60,5 +58,12 @@ string_view PreparedStmt::column_text(usize idx) const {
     const auto ustr = sqlite3_column_text(stmt, idx);
 
     return reinterpret_cast<const char *>(ustr);
+}
+
+void PreparedStmt::bind_int(usize idx, int value) const {
+    const auto result = sqlite3_bind_int(stmt, idx, value);
+
+    if (result != SQLITE_OK)
+        throw DatabaseError{"Error binding integer value", result};
 }
 } // namespace uppr::db

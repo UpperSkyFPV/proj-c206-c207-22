@@ -76,6 +76,11 @@ public:
      */
     string_view column_text(usize idx) const;
 
+    /**
+     * Bind a parameter
+     */
+    void bind_int(usize idx, int value) const;
+
 private:
     /**
      * Reset the statement so that we can run it again.

@@ -2,8 +2,10 @@
 
 #include "conn.hpp"
 #include "dao.hpp"
+#include "models/address.hpp"
 #include "models/user.hpp"
 #include "stmt.hpp"
+#include <vector>
 
 namespace uppr::dao {
 

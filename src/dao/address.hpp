@@ -17,5 +17,13 @@ public:
     std::vector<models::AddressModel> all() const {
         return select_with<models::AddressModel>("SELECT * FROM Address");
     }
+
+    models::AddressModel with_id(int id) const {
+        const auto stmt = db->prepare("SELECT * FROM Address WHERE id = ?");
+        stmt.bind_int(1, id);
+        stmt.step();
+
+        return models::AddressModel::from_row(stmt);
+    }
 };
 } // namespace uppr::dao

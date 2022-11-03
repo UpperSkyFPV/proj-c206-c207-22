@@ -18,6 +18,7 @@
 
 #include "db/conn.hpp"
 #include "os/file.hpp"
+#include "state.hpp"
 #include "term/key.hpp"
 #include "term/term.hpp"
 #include "vector2.hpp"
@@ -44,10 +45,12 @@ int main(int argc, char **argv) {
         });
     });
 
+    const auto state = std::make_shared<uppr::app::AppState>(database);
+
     const auto scenes = uppr::eng::SeqScene::make();
     scenes->add_scene(uppr::app::PerfScene::make());
     scenes->add_scene(uppr::app::SidebarScene::make(
-        uppr::app::ChatScene::make(database), database));
+        uppr::app::ChatScene::make(database), state));
 
     uppr::eng::Engine engine{30, term, scenes};
 

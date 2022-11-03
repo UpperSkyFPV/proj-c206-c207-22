@@ -11,14 +11,16 @@
 #pragma once
 
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <memory>
-#include <chrono>
 
 #include "loguru.hpp"
 
@@ -37,9 +39,13 @@ using i32 = int32_t;
 using usize = std::size_t;
 
 using std::array;
+using std::optional;
+using std::shared_ptr;
 using std::span;
 using std::string_view;
-using std::shared_ptr;
+
+template <typename T>
+using refw = std::reference_wrapper<T>;
 
 using namespace std::string_view_literals;
 using namespace std::string_literals;
