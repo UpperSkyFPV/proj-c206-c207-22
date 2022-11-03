@@ -1,4 +1,5 @@
 #include "create-user-scene.hpp"
+#include "event.hpp"
 #include "fmt/color.h"
 #include "vector2.hpp"
 #include <string_view>
@@ -43,11 +44,44 @@ void CreateUserScene::mount(eng::Engine &engine) {
 
     select_next_keybind_handle = engine.get_eventbus().appendListener(
         '\t', [this](char c) { select_next_item(); });
+
+    select_prev_keybind_handle = engine.get_eventbus().appendListener(
+        eng::Event::NonChar::shift_tab, [this](char c) { select_prev_item(); });
 }
 
 void CreateUserScene::unmount(eng::Engine &engine) {
     engine.get_eventbus().removeListener('\r', edit_item_keybind_handle);
     engine.get_eventbus().removeListener('\t', select_next_keybind_handle);
+    engine.get_eventbus().removeListener(eng::Event::NonChar::shift_tab,
+                                         select_prev_keybind_handle);
+}
+
+void CreateUserScene::select_next_item() {
+    switch (selected_item) {
+    case Item::username: selected_item = Item::addr_host; break;
+    case Item::addr_host: selected_item = Item::addr_port; break;
+    case Item::addr_port: {
+        if (create_data.any_empty())
+            selected_item = Item::username;
+        else
+            selected_item = Item::confirm;
+    } break;
+    case Item::confirm: selected_item = Item::username; break;
+    }
+}
+
+void CreateUserScene::select_prev_item() {
+    switch (selected_item) {
+    case Item::username: {
+        if (create_data.any_empty())
+            selected_item = Item::addr_port;
+        else
+            selected_item = Item::confirm;
+    } break;
+    case Item::addr_host: selected_item = Item::username; break;
+    case Item::addr_port: selected_item = Item::addr_host; break;
+    case Item::confirm: selected_item = Item::addr_port; break;
+    }
 }
 
 term::Transform CreateUserScene::draw_input(Item item_kind,

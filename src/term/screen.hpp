@@ -49,6 +49,11 @@ public:
     char readc() const { return term.readc(); }
 
     /**
+     * Read a single character from the terminal.
+     */
+    string_view read(span<char> buf) const { return term.read(buf); }
+
+    /**
      * Set a pixel in the buffer at the given coordinates.
      */
     void setc(int x, int y, const Pixel &pixel);
@@ -143,6 +148,8 @@ public:
     void set_termios_control(cc_t time, cc_t min) {
         term.set_termios_control(time, min);
     }
+
+    void commit_termios(bool flush) { term.commit_termios(flush); }
 
     /**
      * Update the size of terminal.

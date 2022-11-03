@@ -72,6 +72,29 @@ void Engine::poll_events() {
 
         // Ctrl+Q is quit, always
         if (term::is_ctrl(c, 'q')) finalize();
+        if (term::is_escseq(c)) {
+            LOG_F(9, "received escape seq");
+
+            screen->set_termios_control(1, 0);
+            screen->commit_termios(false);
+
+            std::array<char, 8> buf;
+            const auto sequence = screen->read(buf);
+            screen->set_termios_control(0, 0);
+            screen->commit_termios(false);
+
+            // The ESC key
+            if (term::is_esc(sequence)) {
+                LOG_F(9, "received key: 'ESC'");
+                eventbus.dispatch(Event::NonChar::esc, Event::NonChar::esc);
+            } else if (term::is_shif_tab(sequence)) {
+                LOG_F(9, "received key: 'shift+tab'");
+                eventbus.dispatch(Event::NonChar::shift_tab,
+                                  Event::NonChar::shift_tab);
+            } else {
+                LOG_F(8, "received unknown escape sequence: '{}'", sequence);
+            }
+        }
 
         LOG_F(9, "received key: '{}' ({:d}, {:d})", c, c, term::ctrl(c));
 

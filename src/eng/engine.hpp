@@ -1,5 +1,6 @@
 #pragma once
 
+#include "event.hpp"
 #include "eventpp/eventdispatcher.h"
 #include "scene.hpp"
 #include "screen.hpp"
@@ -36,7 +37,7 @@ namespace uppr::eng {
  */
 class Engine {
 public:
-    using EventBus = eventpp::EventDispatcher<char, void(char)>;
+    using EventBus = eventpp::EventDispatcher<Event, void(Event)>;
 
     Engine(int fps_, std::shared_ptr<term::TermScreen> t)
         : screen{t}, fps{fps_}, period_millis{max_frame_time()} {}

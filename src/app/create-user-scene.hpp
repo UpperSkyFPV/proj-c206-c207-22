@@ -53,19 +53,13 @@ private:
      * Move the `selected_item` to the next possible item in the order `username
      * -> host -> port -> username -> ...`
      */
-    constexpr void select_next_item() {
-        switch (selected_item) {
-        case Item::username: selected_item = Item::addr_host; break;
-        case Item::addr_host: selected_item = Item::addr_port; break;
-        case Item::addr_port: {
-            if (create_data.any_empty())
-                selected_item = Item::username;
-            else
-                selected_item = Item::confirm;
-        } break;
-        case Item::confirm: selected_item = Item::username; break;
-        }
-    }
+    void select_next_item();
+
+    /**
+     * Move the `selected_item` to the previous possible item in the order
+     * `username -> confirm -> addr_port -> addr_host -> username -> ...`
+     */
+    void select_prev_item();
 
     /**
      * Draw one input field.
@@ -100,6 +94,11 @@ private:
      * Handle for the callback for selecting the next input
      */
     eng::Engine::EventBus::Handle select_next_keybind_handle;
+
+    /**
+     * Handle for the callback for selecting the previous input
+     */
+    eng::Engine::EventBus::Handle select_prev_keybind_handle;
 
     /**
      * Data used during creation of data.

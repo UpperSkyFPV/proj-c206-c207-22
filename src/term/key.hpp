@@ -64,4 +64,9 @@ constexpr inline bool is_up(string_view s) noexcept { return s == "[A"sv; }
  * If the given escaped character sequence represents the down array key.
  */
 constexpr inline bool is_down(string_view s) noexcept { return s == "[B"sv; }
+
+/**
+ * If the given escaped character sequence represents the shift-tab key combination.
+ */
+constexpr inline bool is_shif_tab(string_view s) noexcept { return s == "[Z"sv; }
 } // namespace uppr::term
