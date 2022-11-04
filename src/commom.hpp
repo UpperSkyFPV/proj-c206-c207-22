@@ -41,6 +41,7 @@ using usize = std::size_t;
 using std::array;
 using std::optional;
 using std::shared_ptr;
+using std::unique_ptr;
 using std::span;
 using std::string_view;
 

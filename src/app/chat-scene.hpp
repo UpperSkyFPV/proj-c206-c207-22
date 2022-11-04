@@ -1,5 +1,6 @@
 #pragma once
 
+#include "chatinfo-scene.hpp"
 #include "conn.hpp"
 #include "eng/engine.hpp"
 #include "eng/scene.hpp"
@@ -13,13 +14,19 @@ namespace uppr::app {
 
 class ChatScene : public eng::Scene {
 public:
-    ChatScene(shared_ptr<AppState> s) : state{s} {}
+    ChatScene(shared_ptr<AppState> s)
+        : state{s}, chat_info{std::make_unique<ChatInfoScene>(s)} {}
 
     void update(eng::Engine &engine) override {}
 
     void draw(eng::Engine &engine, term::Transform transform, term::Size size,
               term::TermScreen &screen) override {
         using namespace fmt;
+
+        const auto info_size = term::Size{size.getx(), size.gety() / 5};
+
+        chat_info->draw(engine, transform, info_size, screen);
+        transform += {0, static_cast<int>(info_size.gety())};
 
         screen.print(transform, "Hello!");
     }
@@ -36,5 +43,6 @@ private:
     eng::Engine::EventBus::Handle u_handle;
 
     shared_ptr<AppState> state;
+    unique_ptr<ChatInfoScene> chat_info;
 };
 } // namespace uppr::app
