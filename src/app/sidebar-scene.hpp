@@ -57,7 +57,6 @@ public:
     }
 
     void mount(eng::Engine &engine) override {
-        // Event handler for the `ctrl+n` key
         hide_sidebar_keybind_handle = engine.get_eventbus().appendListener(
             term::ctrl('n'), [this](char c) { show_sidebar = !show_sidebar; });
 

@@ -1,4 +1,5 @@
 #include "conn.hpp"
+#include "create-chat-scene.hpp"
 #include "create-user-scene.hpp"
 #include "engine.hpp"
 #include "except.hpp"
@@ -8,6 +9,7 @@
 #include "result.hpp"
 #include "root.hpp"
 #include "scene.hpp"
+#include "select-view.hpp"
 #include "stack-scene.hpp"
 #include "state.hpp"
 #include "stmt.hpp"
@@ -26,12 +28,14 @@ shared_ptr<eng::Scene> make_scene_tree(eng::Engine &engine,
 
     // The main show
     {
-        const auto modal = eng::ModalScene::make(CreateUserScene::make(state),
-                                                 PerfScene::make(), {100, 20});
+        const auto create_user_modal = eng::ModalScene::make(
+            CreateUserScene::make(state), PerfScene::make());
 
-        modal->show_modal(engine);
+        const auto create_chat_modal = eng::ModalScene::make(
+            CreateChatScene::make(state), PerfScene::make());
 
-        stack->add_scene(engine, modal);
+        stack->add_scene(engine, SelectViewScene::make(state, create_user_modal,
+                                                       create_chat_modal));
     }
 
     return stack;

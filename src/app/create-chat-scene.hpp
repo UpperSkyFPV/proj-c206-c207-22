@@ -1,39 +1,30 @@
 #pragma once
 
-#include "engine.hpp"
-#include "fmt/color.h"
 #include "scene.hpp"
 #include "state.hpp"
-#include "vector2.hpp"
-#include <iostream>
-#include <string>
+#include "engine.hpp"
 
 namespace uppr::app {
-
 /**
  * This is a simple form that requires the input for creating a new user.
  */
-class CreateUserScene : public eng::Scene {
-    enum class Item { username, addr_host, addr_port, confirm };
+class CreateChatScene : public eng::Scene {
+    enum class Item { name, description, confirm };
 
     struct CreateData {
-        std::string username;
-        std::string addr_host;
-        std::string addr_port;
+        std::string name;
+        std::string description;
 
         void reset() {
-            username.clear();
-            addr_host.clear();
-            addr_port.clear();
+            name.clear();
+            description.clear();
         }
 
-        bool any_empty() const {
-            return username.empty() || addr_host.empty() || addr_port.empty();
-        }
+        bool any_empty() const { return name.empty() || description.empty(); }
     };
 
 public:
-    CreateUserScene(shared_ptr<AppState> s) : state{s} {}
+    CreateChatScene(shared_ptr<AppState> s) : state{s} {}
 
     void update(eng::Engine &engine) override {}
 
@@ -44,20 +35,20 @@ public:
 
     void unmount(eng::Engine &engine) override;
 
-    static std::shared_ptr<CreateUserScene> make(shared_ptr<AppState> s) {
-        return std::make_shared<CreateUserScene>(s);
+    static std::shared_ptr<CreateChatScene> make(shared_ptr<AppState> s) {
+        return std::make_shared<CreateChatScene>(s);
     }
 
 private:
     /**
-     * Move the `selected_item` to the next possible item in the order `username
-     * -> host -> port -> username -> ...`
+     * Move the `selected_item` to the next possible item in the order `name ->
+     * description -> confirm -> name -> ...`
      */
     void select_next_item();
 
     /**
      * Move the `selected_item` to the previous possible item in the order
-     * `username -> confirm -> addr_port -> addr_host -> username -> ...`
+     * `name -> confirm -> description -> name -> ...`
      */
     void select_prev_item();
 
@@ -95,7 +86,7 @@ private:
     /**
      * The currently selected input item.
      */
-    Item selected_item{Item::username};
+    Item selected_item{Item::name};
 
     /**
      * If the user pressed a key that says: I want to type into the field.

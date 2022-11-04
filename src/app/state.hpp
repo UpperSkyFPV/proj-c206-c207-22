@@ -86,6 +86,16 @@ public:
     void fetch_chats() { chats = chat_dao.all(); }
 
     /**
+     * Get all users.
+     */
+    const std::vector<models::UserModel> &get_users() const { return users; }
+
+    /**
+     * Get the user at the given index.
+     */
+    const models::UserModel &get_user(usize idx) const { return users.at(idx); }
+
+    /**
      * Update the list of users with new values from the database
      */
     void fetch_users() { users = user_dao.all(); }
@@ -100,7 +110,18 @@ public:
 
         user_dao.insert(user);
 
+        // update our copy after inserting
         fetch_users();
+    }
+
+    /**
+     * Insert a new chat into the database.
+     */
+    void insert_new_chat(const models::ChatModel &chat) {
+        chat_dao.insert(chat);
+
+        // update our copy after inserting
+        fetch_chats();
     }
 
 private:
