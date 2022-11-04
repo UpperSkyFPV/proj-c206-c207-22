@@ -35,43 +35,14 @@ public:
     SidebarScene(std::shared_ptr<eng::Scene> c, shared_ptr<AppState> s)
         : content{c}, chatview{std::make_unique<ChatViewScene>(s)}, state{s} {}
 
-    void update(eng::Engine &engine) override {
-        chatview->update(engine);
-        content->update(engine);
-    }
+    void update(eng::Engine &engine) override;
 
     void draw(eng::Engine &engine, term::Transform transform, term::Size size,
-              term::TermScreen &screen) override {
-        using namespace fmt;
+              term::TermScreen &screen) override;
 
-        // The sidebar has the size of 1/3 of the screen width
-        const auto width = show_sidebar ? size.getx() / 3 : 0;
-        if (show_sidebar) {
-            chatview->draw(engine, transform, {width, size.gety()}, screen);
+    void mount(eng::Engine &engine) override;
 
-            screen.vline(width, 0, size.gety(), '|');
-        }
-
-        content->draw(engine, transform.move(width + 1, 0),
-                      size - term::Size{width - 1, 0}, screen);
-    }
-
-    void mount(eng::Engine &engine) override {
-        hide_sidebar_keybind_handle = engine.get_eventbus().appendListener(
-            term::ctrl('n'), [this](char c) { show_sidebar = !show_sidebar; });
-
-        chatview->mount(engine);
-        content->mount(engine);
-    }
-
-    void unmount(eng::Engine &engine) override {
-        // Remove the event handler for the `ctrl+n` key
-        engine.get_eventbus().removeListener(term::ctrl('n'),
-                                             hide_sidebar_keybind_handle);
-
-        chatview->unmount(engine);
-        content->unmount(engine);
-    }
+    void unmount(eng::Engine &engine) override;
 
     static std::shared_ptr<SidebarScene> make(std::shared_ptr<eng::Scene> c,
                                               shared_ptr<AppState> s) {

@@ -12,9 +12,8 @@ namespace uppr::eng {
  */
 class ModalScene : public Scene {
 public:
-    ModalScene(shared_ptr<Scene> m, shared_ptr<Scene> b,
-               const term::Transform &t = {})
-        : modal{m}, background{b}, origin{t} {}
+    ModalScene(shared_ptr<Scene> m, const term::Transform &t = {})
+        : modal{m}, origin{t} {}
 
     void update(Engine &engine) override;
 
@@ -35,9 +34,8 @@ public:
     bool is_showing() const { return should_show_modal; }
 
     static std::shared_ptr<ModalScene> make(shared_ptr<Scene> m,
-                                            shared_ptr<Scene> b,
                                             const term::Transform &t = {}) {
-        return std::make_shared<ModalScene>(m, b, t);
+        return std::make_shared<ModalScene>(m, t);
     }
 
 private:
@@ -45,11 +43,6 @@ private:
      * The modal popup scene.
      */
     shared_ptr<Scene> modal;
-
-    /**
-     * The background scene (That should always be rendered behind the modal).
-     */
-    shared_ptr<Scene> background;
 
     /**
      * The offset for the popup scene.

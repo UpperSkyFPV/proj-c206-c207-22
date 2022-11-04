@@ -1,3 +1,5 @@
+#include "chat-scene.hpp"
+#include "chatview-scene.hpp"
 #include "conn.hpp"
 #include "create-chat-scene.hpp"
 #include "create-user-scene.hpp"
@@ -10,6 +12,7 @@
 #include "root.hpp"
 #include "scene.hpp"
 #include "select-view.hpp"
+#include "sidebar-scene.hpp"
 #include "stack-scene.hpp"
 #include "state.hpp"
 #include "stmt.hpp"
@@ -23,20 +26,22 @@ shared_ptr<eng::Scene> make_scene_tree(eng::Engine &engine,
     // other.
     const auto stack = eng::StackScene::make();
 
-    // The performance scene to shows performance stats
-    stack->add_scene(engine, PerfScene::make());
+    stack->add_scene(engine, SidebarScene::make(ChatScene::make(state), state));
 
     // The main show
     {
-        const auto create_user_modal = eng::ModalScene::make(
-            CreateUserScene::make(state), PerfScene::make());
+        const auto create_user_modal =
+            eng::ModalScene::make(CreateUserScene::make(state));
 
-        const auto create_chat_modal = eng::ModalScene::make(
-            CreateChatScene::make(state), PerfScene::make());
+        const auto create_chat_modal =
+            eng::ModalScene::make(CreateChatScene::make(state));
 
         stack->add_scene(engine, SelectViewScene::make(state, create_user_modal,
                                                        create_chat_modal));
     }
+
+    // The performance scene to shows performance stats
+    stack->add_scene(engine, PerfScene::make());
 
     return stack;
 }

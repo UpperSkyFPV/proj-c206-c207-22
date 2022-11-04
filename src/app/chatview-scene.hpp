@@ -3,6 +3,7 @@
 #include "engine.hpp"
 #include "scene.hpp"
 #include "state.hpp"
+#include <memory>
 
 namespace uppr::app {
 
@@ -10,63 +11,17 @@ class ChatViewScene : public eng::Scene {
 public:
     ChatViewScene(shared_ptr<AppState> s) : state{s} {}
 
-    void update(eng::Engine &engine) override {
-        if (chats_needs_update) update_chat();
-    }
+    void update(eng::Engine &engine) override;
 
     void draw(eng::Engine &engine, term::Transform transform, term::Size size,
-              term::TermScreen &screen) override {
-        using namespace fmt;
+              term::TermScreen &screen) override;
 
-        auto t = transform.move(2, 0);
-        usize idx{};
-        for (const auto &item : state->get_chats()) {
-            // Print the title of the chat (its name) in bold
-            auto name_style = fg(color::white) | emphasis::bold;
-            // If the current chat is the selected one, then mark it in some
-            // visible manner
-            if (idx == state->get_selected_chat()) {
-                name_style |= emphasis::reverse;
-            }
-            screen.print(t, name_style, "{}", item.name);
+    void mount(eng::Engine &engine) override;
 
-            // Print at the right corner the id of the chat
-            screen.print(t.move(size.getx() - 4, 0), "{:>3}", item.id);
+    void unmount(eng::Engine &engine) override;
 
-            // move one line down
-            t += term::Transform{0, 1};
-
-            // Print the description of the chat (limiting the size and adding
-            // '...' if needed)
-            // TODO: Make multiline if needed.
-            const auto maxwidth = size.getx() - 4;
-            const auto descr =
-                static_cast<string_view>(item.description).substr(0, maxwidth);
-            screen.print(t, emphasis::faint, "{}{}", descr,
-                         item.description.length() > maxwidth ? "..." : "");
-
-            // Move 2 lines down and add the horizontal separator
-            t += term::Transform{0, 2};
-            screen.hline(t.getx(), size.getx(), t.gety(), '-');
-
-            // Move to the next line before the next iteration
-            t += term::Transform{0, 1};
-            idx++;
-        }
-    }
-
-    void mount(eng::Engine &engine) override {
-        LOG_F(5, "Mount for chatview scene");
-
-        cycle_chat_keybind_handle =
-            engine.get_eventbus().appendListener('c', [this](char c) {
-                const auto s = state->select_next_chat();
-                LOG_F(7, "Selected next chat: {}", s);
-            });
-    }
-
-    void unmount(eng::Engine &engine) override {
-        engine.get_eventbus().removeListener('c', cycle_chat_keybind_handle);
+    static std::shared_ptr<ChatViewScene> make(shared_ptr<AppState> s) {
+        return std::make_shared<ChatViewScene>(s);
     }
 
 private:

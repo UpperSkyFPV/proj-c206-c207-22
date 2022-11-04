@@ -3,15 +3,11 @@
 namespace uppr::eng {
 
 void ModalScene::update(Engine &engine) {
-    background->update(engine);
-
     if (modal && should_show_modal) modal->update(engine);
 }
 
 void ModalScene::draw(Engine &engine, term::Transform transform,
                       term::Size size, term::TermScreen &screen) {
-    background->draw(engine, transform, size, screen);
-
     if (modal && should_show_modal) {
         transform += origin;
 
@@ -28,8 +24,6 @@ void ModalScene::draw(Engine &engine, term::Transform transform,
 }
 
 void ModalScene::mount(Engine &engine) {
-    background->mount(engine);
-
     if (should_show_modal && !modal_mounted) {
         modal->mount(engine);
         modal_mounted = true;
@@ -37,8 +31,6 @@ void ModalScene::mount(Engine &engine) {
 }
 
 void ModalScene::unmount(Engine &engine) {
-    background->unmount(engine);
-
     if (should_show_modal && modal_mounted) {
         modal->unmount(engine);
         modal_mounted = false;
