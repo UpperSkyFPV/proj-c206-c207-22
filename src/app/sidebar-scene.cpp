@@ -19,8 +19,9 @@ void SidebarScene::draw(eng::Engine &engine, term::Transform transform,
         screen.vline(width, 0, size.gety(), '|');
     }
 
-    content->draw(engine, transform.move(width + show_sidebar, 0),
-                  size - term::Size{width - show_sidebar, 0}, screen);
+    const auto csize = size - term::Size{width + show_sidebar, 0};
+    content->draw(engine, transform.move(width + show_sidebar, 0), csize,
+                  screen);
 }
 
 void SidebarScene::mount(eng::Engine &engine) {

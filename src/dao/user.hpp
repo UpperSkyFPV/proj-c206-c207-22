@@ -20,6 +20,26 @@ public:
         return select_with<models::UserModel>("SELECT * FROM User");
     }
 
+    std::vector<models::UserModel> all_for_chat(int chat_id) const {
+        LOG_F(9, "Getting all users on chat {}", chat_id);
+
+        constexpr auto sql =
+            R"~~(
+SELECT U.`id`, U.`name`, U.`user_address` FROM User AS U
+        JOIN Chat_has_User AS CU ON CU.User_id = U.id
+        WHERE CU.Chat_id = ?
+)~~"sv;
+        const auto stmt = db->prepare(sql);
+        stmt.bind_int(1, chat_id);
+
+        std::vector<models::UserModel> users;
+        while (stmt.step().is_row()) {
+            users.push_back(models::UserModel::from_row(stmt));
+        }
+
+        return users;
+    }
+
     void insert(const models::UserModel &m) const {
         const auto stmt =
             db->prepare("INSERT INTO User(name, user_address) VALUES (?, ?)");

@@ -52,12 +52,20 @@ public:
     /**
      * If there is a chat selected.
      */
-    bool has_chat_selected() { return selected_chat > 0; }
+    bool has_chat_selected() const { return selected_chat >= 0; }
 
     /**
      * Get what chat is currently selected.
      */
     int get_selected_chat() const { return selected_chat; }
+
+    /**
+     * Get the selected chat object. Returns `nullptr` if no chat is currently
+     * selected.
+     */
+    const models::ChatModel *get_selected_chatmodel() const {
+        return has_chat_selected() ? &get_chat(get_selected_chat()) : nullptr;
+    }
 
     /**
      * Get all chats.
@@ -89,6 +97,11 @@ public:
      * Get all users.
      */
     const std::vector<models::UserModel> &get_users() const { return users; }
+
+    std::vector<models::UserModel>
+    get_users_of_chat(const models::ChatModel &chat) const {
+        return user_dao.all_for_chat(chat.id);
+    }
 
     /**
      * Get the user at the given index.

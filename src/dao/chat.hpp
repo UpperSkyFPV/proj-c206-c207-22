@@ -4,6 +4,7 @@
 #include "dao.hpp"
 #include "models/chat.hpp"
 #include "stmt.hpp"
+#include <vector>
 
 namespace uppr::dao {
 

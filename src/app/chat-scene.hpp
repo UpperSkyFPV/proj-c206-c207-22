@@ -17,7 +17,7 @@ public:
     ChatScene(shared_ptr<AppState> s)
         : state{s}, chat_info{std::make_unique<ChatInfoScene>(s)} {}
 
-    void update(eng::Engine &engine) override {}
+    void update(eng::Engine &engine) override { chat_info->update(engine); }
 
     void draw(eng::Engine &engine, term::Transform transform, term::Size size,
               term::TermScreen &screen) override {
@@ -28,12 +28,13 @@ public:
         chat_info->draw(engine, transform, info_size, screen);
         transform += {0, static_cast<int>(info_size.gety())};
 
-        screen.print(transform, "Hello!");
+        screen.hline(transform.getx() + 1, transform.getx() + size.getx() - 1,
+                     transform.gety(), '=');
     }
 
-    void mount(eng::Engine &engine) override {}
+    void mount(eng::Engine &engine) override { chat_info->mount(engine); }
 
-    void unmount(eng::Engine &engine) override {}
+    void unmount(eng::Engine &engine) override { chat_info->unmount(engine); }
 
     static std::shared_ptr<ChatScene> make(shared_ptr<AppState> s) {
         return std::make_shared<ChatScene>(s);
