@@ -73,6 +73,10 @@ void SelectViewScene::draw_bottom_panel(eng::Engine &engine,
 
     screen.hline(0, size.getx(), transform.gety(), {' ', style});
 
+    constexpr auto exit_help = "<ctrl+q> EXIT |"sv;
+    screen.print(transform, style, exit_help);
+    transform += {1 + exit_help.size(), 0};
+
     constexpr auto create_user_help = "<ctrl+u> Create User |"sv;
     screen.print(transform, style, create_user_help);
     transform += {1 + create_user_help.size(), 0};
@@ -80,6 +84,12 @@ void SelectViewScene::draw_bottom_panel(eng::Engine &engine,
     constexpr auto create_chat_help = "<ctrl+c> Create Chat |"sv;
     screen.print(transform, style, create_chat_help);
     transform += {1 + create_chat_help.size(), 0};
+
+    if (state->has_chat_selected()) {
+        constexpr auto add_user_to_chat_help = "<ctrl+a> Add User |"sv;
+        screen.print(transform, style, add_user_to_chat_help);
+        transform += {1 + add_user_to_chat_help.size(), 0};
+    }
 }
 
 void SelectViewScene::add_user_close_handler(eng::Engine &engine) {
