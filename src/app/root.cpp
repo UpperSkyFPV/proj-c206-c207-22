@@ -1,3 +1,4 @@
+#include "add-user-to-chat-scene.hpp"
 #include "chat-scene.hpp"
 #include "chatview-scene.hpp"
 #include "conn.hpp"
@@ -36,8 +37,12 @@ shared_ptr<eng::Scene> make_scene_tree(eng::Engine &engine,
         const auto create_chat_modal =
             eng::ModalScene::make(CreateChatScene::make(state));
 
+        const auto add_usertochat_modal =
+            eng::ModalScene::make(AddUserToChatScene::make(state));
+
         stack->add_scene(engine, SelectViewScene::make(state, create_user_modal,
-                                                       create_chat_modal));
+                                                       create_chat_modal,
+                                                       add_usertochat_modal));
     }
 
     // The performance scene to shows performance stats

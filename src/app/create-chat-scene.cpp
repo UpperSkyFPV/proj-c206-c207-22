@@ -44,7 +44,12 @@ void CreateChatScene::mount(eng::Engine &engine) {
         eng::Event::NonChar::shift_tab, [this](char c) { select_prev_item(); });
 }
 
-void CreateChatScene::unmount(eng::Engine &engine) {}
+void CreateChatScene::unmount(eng::Engine &engine) {
+    engine.get_eventbus().removeListener('\r', edit_item_keybind_handle);
+    engine.get_eventbus().removeListener('\t', select_next_keybind_handle);
+    engine.get_eventbus().removeListener(eng::Event::NonChar::shift_tab,
+                                         select_prev_keybind_handle);
+}
 
 void CreateChatScene::select_next_item() {
     switch (selected_item) {

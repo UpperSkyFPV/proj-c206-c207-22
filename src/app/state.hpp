@@ -27,9 +27,15 @@ public:
      * @return The index (not the ID!) of the newly selected chat.
      */
     int select_next_chat() {
-        if (selected_chat < 0) return selected_chat = 0;
+        if (selected_chat < 0)
+            selected_chat = 0;
+        else
+            selected_chat = (selected_chat + 1) % chats.size();
 
-        return selected_chat = (selected_chat + 1) % chats.size();
+        // Needs to update this every time we change the selected chat
+        fetch_users_of_chat();
+
+        return selected_chat;
     }
 
     /**
@@ -39,7 +45,10 @@ public:
      * @return The index (not the ID!) of the newly selected chat.
      */
     int select_prev_chat() {
-        if (--selected_chat < 0) return selected_chat = chats.size() - 1;
+        if (--selected_chat < 0) selected_chat = chats.size() - 1;
+
+        // Needs to update this every time we change the selected chat
+        fetch_users_of_chat();
 
         return selected_chat;
     }
@@ -47,7 +56,12 @@ public:
     /**
      * Deselect the chat (no chat will be marked as selected).
      */
-    void deselect_chat() { selected_chat = -1; }
+    void deselect_chat() {
+        selected_chat = -1;
+
+        // Needs to update this every time we change the selected chat
+        fetch_users_of_chat();
+    }
 
     /**
      * If there is a chat selected.
@@ -98,9 +112,19 @@ public:
      */
     const std::vector<models::UserModel> &get_users() const { return users; }
 
+    /**
+     * Get all users that are members of the given chat.
+     */
     std::vector<models::UserModel>
     get_users_of_chat(const models::ChatModel &chat) const {
         return user_dao.all_for_chat(chat.id);
+    }
+
+    /**
+     * Get all users that are members of the currently selected chat.
+     */
+    const std::vector<models::UserModel> &get_users_of_selected_chat() const {
+        return members_of_chat;
     }
 
     /**
@@ -112,6 +136,36 @@ public:
      * Update the list of users with new values from the database
      */
     void fetch_users() { users = user_dao.all(); }
+
+    /**
+     * Update the list of users of current chat.
+     */
+    void fetch_users_of_chat() {
+        const auto sel = get_selected_chatmodel();
+        if (sel)
+            members_of_chat = get_users_of_chat(*sel);
+        else
+            members_of_chat.clear();
+    }
+
+    /**
+     * Add the given user to the currently selected chat.
+     */
+    void add_user_to_selected_chat(const models::UserModel &user) {
+        const auto chat = get_selected_chatmodel();
+        if (!chat) {
+            LOG_F(ERROR,
+                  "No chat selected when add_user_to_selected_chat was called");
+            return;
+        }
+
+        chat_dao.add_user(*chat, user);
+
+        // Refetch everything?
+        fetch_users();
+        fetch_chats();
+        fetch_users_of_chat();
+    }
 
     /**
      * Insert a new user into the database.
@@ -153,6 +207,11 @@ private:
      * Store all of the users.
      */
     std::vector<models::UserModel> users;
+
+    /**
+     * Store all of the users that are members of the current chat.
+     */
+    std::vector<models::UserModel> members_of_chat;
 
     /**
      * Store a reference to the database connection.

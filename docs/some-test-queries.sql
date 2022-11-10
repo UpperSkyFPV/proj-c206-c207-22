@@ -56,6 +56,11 @@ select U.id, U.`name`, A.`host`, A.`port` from `User` as U
 			  join `Chat_has_User` as CU on CU.User_id = U.id
               where CU.Chat_id = 3;
               
+
+select U.id, U.`name`, A.`host`, A.`port` from `User` as U
+			  join Address as A on U.user_address = A.id
+			  join `Chat_has_User` as CU on CU.User_id = U.id
+              where CU.Chat_id = 3;
               
               
               

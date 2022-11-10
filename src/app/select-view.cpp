@@ -8,12 +8,14 @@ namespace uppr::app {
 void SelectViewScene::update(eng::Engine &engine) {
     create_user_modal->update(engine);
     create_chat_modal->update(engine);
+    add_user_to_chat_modal->update(engine);
 }
 
 void SelectViewScene::draw(eng::Engine &engine, term::Transform transform,
                            term::Size size, term::TermScreen &screen) {
     create_user_modal->draw(engine, transform, size, screen);
     create_chat_modal->draw(engine, transform, size, screen);
+    add_user_to_chat_modal->draw(engine, transform, size, screen);
 
     draw_bottom_panel(engine, transform, size, screen);
 }
@@ -21,7 +23,7 @@ void SelectViewScene::draw(eng::Engine &engine, term::Transform transform,
 void SelectViewScene::mount(eng::Engine &engine) {
     const auto open_user_listener = [this, &engine](char c) {
         // ignore if the other is already up
-        if (create_chat_modal->is_showing()) return;
+        if (any_is_open()) return;
 
         create_user_modal->show_modal(engine);
         add_user_close_handler(engine);
@@ -29,10 +31,18 @@ void SelectViewScene::mount(eng::Engine &engine) {
 
     const auto open_chat_listener = [this, &engine](char c) {
         // ignore if the other is already up
-        if (create_user_modal->is_showing()) return;
+        if (any_is_open()) return;
 
         create_chat_modal->show_modal(engine);
         add_chat_close_handler(engine);
+    };
+
+    const auto open_adduser_listener = [this, &engine](char c) {
+        // ignore if the other is already up
+        if (any_is_open() || !state->has_chat_selected()) return;
+
+        add_user_to_chat_modal->show_modal(engine);
+        add_adduser_close_handler(engine);
     };
 
     // Event handler for the `ctrl+n` key
@@ -40,6 +50,8 @@ void SelectViewScene::mount(eng::Engine &engine) {
         term::ctrl('u'), open_user_listener);
     open_create_chat_keybind_handle = engine.get_eventbus().appendListener(
         term::ctrl('c'), open_chat_listener);
+    open_create_chat_keybind_handle = engine.get_eventbus().appendListener(
+        term::ctrl('a'), open_adduser_listener);
 }
 
 void SelectViewScene::unmount(eng::Engine &engine) {
@@ -77,7 +89,7 @@ void SelectViewScene::add_user_close_handler(eng::Engine &engine) {
     // When <ESC> is pressed, we close the create user modal
     close_any_modal_keybind_handle = engine.get_eventbus().appendListener(
         eng::Event::NonChar::esc, [this, &engine](char c) {
-            LOG_F(INFO, "closing create user");
+            LOG_F(8, "closing create user");
 
             create_user_modal->hide_modal(engine);
             remove_close_handler(engine);
@@ -91,9 +103,23 @@ void SelectViewScene::add_chat_close_handler(eng::Engine &engine) {
     // When <ESC> is pressed, we close the create user modal
     close_any_modal_keybind_handle = engine.get_eventbus().appendListener(
         eng::Event::NonChar::esc, [this, &engine](char c) {
-            LOG_F(INFO, "closing create chat");
+            LOG_F(8, "closing create chat");
 
             create_chat_modal->hide_modal(engine);
+            remove_close_handler(engine);
+        });
+}
+
+void SelectViewScene::add_adduser_close_handler(eng::Engine &engine) {
+    // Avoid leaking handlers
+    if (close_any_modal_keybind_handle) remove_close_handler(engine);
+
+    // When <ESC> is pressed, we close the create user modal
+    close_any_modal_keybind_handle = engine.get_eventbus().appendListener(
+        eng::Event::NonChar::esc, [this, &engine](char c) {
+            LOG_F(8, "closing add user to chat");
+
+            add_user_to_chat_modal->hide_modal(engine);
             remove_close_handler(engine);
         });
 }

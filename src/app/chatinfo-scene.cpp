@@ -25,18 +25,9 @@ void ChatInfoScene::draw(eng::Engine &engine, term::Transform transform,
 
 void ChatInfoScene::mount(eng::Engine &engine) {
     update_users();
-
-    add_user_keybind_handle =
-        engine.get_eventbus().appendListener(term::ctrl('a'), [this](char c) {
-            if (state->has_chat_selected()) {
-                LOG_F(9, "Adding user to chat!");
-            }
-        });
 }
 
 void ChatInfoScene::unmount(eng::Engine &engine) {
-    engine.get_eventbus().removeListener(term::ctrl('a'),
-                                         add_user_keybind_handle);
 }
 
 void ChatInfoScene::draw_chat_info(const models::ChatModel &chat,

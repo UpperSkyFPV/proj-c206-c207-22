@@ -44,11 +44,6 @@ private:
     }
 
 private:
-    /**
-     * Handle for the callback for adding a new user to a chat.
-     */
-    eng::Engine::EventBus::Handle add_user_keybind_handle;
-
     shared_ptr<AppState> state;
 
     int last_selected_chat{-1};

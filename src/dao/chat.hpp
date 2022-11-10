@@ -3,6 +3,7 @@
 #include "conn.hpp"
 #include "dao.hpp"
 #include "models/chat.hpp"
+#include "models/user.hpp"
 #include "stmt.hpp"
 #include <vector>
 
@@ -24,6 +25,15 @@ public:
             db->prepare("INSERT INTO Chat(name, description) VALUES (?, ?)");
         stmt.bind_text(1, m.name);
         stmt.bind_text(2, m.description);
+        stmt.step();
+    }
+
+    void add_user(const models::ChatModel &chat,
+                  const models::UserModel &user) const {
+        const auto stmt = db->prepare(
+            "INSERT INTO Chat_has_User(Chat_id, User_id) VALUES (?, ?)");
+        stmt.bind_int(1, chat.id);
+        stmt.bind_int(2, user.id);
         stmt.step();
     }
 };

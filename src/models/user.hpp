@@ -23,5 +23,7 @@ struct UserModel {
 
         return {id, std::string{name}, user_address};
     }
+
+    constexpr auto operator<=>(const UserModel &) const = default;
 };
 } // namespace uppr::models
