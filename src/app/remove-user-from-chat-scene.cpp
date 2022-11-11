@@ -1,15 +1,10 @@
-#include "add-user-to-chat-scene.hpp"
-#include "fmt/color.h"
-#include "models/user.hpp"
-
-#include <bits/ranges_algo.h>
-#include <iterator>
+#include "remove-user-from-chat-scene.hpp"
 #include <set>
-#include <vector>
 
 namespace uppr::app {
-void AddUserToChatScene::draw(eng::Engine &engine, term::Transform transform,
-                              term::Size size, term::TermScreen &screen) {
+void RemoveUserFromChatScene::draw(eng::Engine &engine,
+                                   term::Transform transform, term::Size size,
+                                   term::TermScreen &screen) {
     using namespace fmt;
 
     const auto current_chat = state->get_selected_chatmodel();
@@ -17,13 +12,13 @@ void AddUserToChatScene::draw(eng::Engine &engine, term::Transform transform,
 
     // Draw a border box
     screen.box(transform, size.getx(), size.gety(), {});
-    screen.print(transform.move(2, 0), "Add user to {}", current_chat->name);
+    screen.print(transform.move(2, 0), "Remove user from {}", current_chat->name);
     transform += {2, 1};
 
     usize idx{};
     for (const auto &[user, present] : users) {
         text_style style;
-        if (present) style |= emphasis::faint;
+        if (!present) style |= emphasis::faint;
         if (idx == selected_user) style |= emphasis::reverse;
 
         screen.print(transform, style, "[{}] {}", user.id, user.name);
@@ -38,8 +33,8 @@ void AddUserToChatScene::draw(eng::Engine &engine, term::Transform transform,
     screen.print(transform, "Exit <ESC>");
 }
 
-void AddUserToChatScene::mount(eng::Engine &engine) {
-    LOG_F(INFO, "mounted AddUserToChatScene");
+void RemoveUserFromChatScene::mount(eng::Engine &engine) {
+    LOG_F(INFO, "mounted RemoveUserFromChatScene");
 
     update_users();
 
@@ -55,13 +50,13 @@ void AddUserToChatScene::mount(eng::Engine &engine) {
         eng::Event::NonChar::shift_tab, [this](char c) { select_prev_user(); });
 }
 
-void AddUserToChatScene::unmount(eng::Engine &engine) {
+void RemoveUserFromChatScene::unmount(eng::Engine &engine) {
     engine.get_eventbus().removeListener('\t', select_next_keybind_handle);
     engine.get_eventbus().removeListener(eng::Event::NonChar::shift_tab,
                                          select_prev_keybind_handle);
 }
 
-void AddUserToChatScene::update_users() {
+void RemoveUserFromChatScene::update_users() {
     std::set<models::UserModel> users_present;
     for (const auto &user : state->get_users_of_selected_chat()) {
         LOG_F(8, "adding '{}' user to present set", user.name);
@@ -81,11 +76,11 @@ void AddUserToChatScene::update_users() {
     }
 
     // Dont enter infinite loops
-    has_user_available = all_users.size() != users_present.size();
+    has_user_available = users_present.size() > 0;
     if (has_user_available) select_next_user();
 }
 
-void AddUserToChatScene::select_next_user() {
+void RemoveUserFromChatScene::select_next_user() {
     if (!has_user_available || users.size() == 0) {
         selected_user = -1;
         return;
@@ -93,10 +88,10 @@ void AddUserToChatScene::select_next_user() {
 
     do {
         selected_user = (selected_user + 1) % users.size();
-    } while (selected_user >= 0 && users[selected_user].second);
+    } while (selected_user >= 0 && !users[selected_user].second);
 }
 
-void AddUserToChatScene::select_prev_user() {
+void RemoveUserFromChatScene::select_prev_user() {
     if (!has_user_available) {
         selected_user = -1;
         return;
@@ -105,16 +100,16 @@ void AddUserToChatScene::select_prev_user() {
     do {
         selected_user--;
         if (selected_user < 0) selected_user = users.size() - 1;
-    } while (selected_user >= 0 && users[selected_user].second);
+    } while (selected_user >= 0 && !users[selected_user].second);
 }
 
-void AddUserToChatScene::confirm() {
+void RemoveUserFromChatScene::confirm() {
     if (selected_user < 0) {
         LOG_F(ERROR, "No selected user on confirm!");
         return;
     }
 
-    state->add_user_to_selected_chat(users[selected_user].first);
+    state->remove_user_from_selected_chat(users[selected_user].first);
     update_users();
 }
 } // namespace uppr::app

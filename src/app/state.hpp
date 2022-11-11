@@ -167,6 +167,22 @@ public:
         fetch_users_of_chat();
     }
 
+    void remove_user_from_selected_chat(const models::UserModel &user) {
+        const auto chat = get_selected_chatmodel();
+        if (!chat) {
+            LOG_F(ERROR, "No chat selected when remove_user_from_selected_chat "
+                         "was called");
+            return;
+        }
+
+        chat_dao.remove_user(*chat, user);
+
+        // Refetch everything?
+        fetch_users();
+        fetch_chats();
+        fetch_users_of_chat();
+    }
+
     /**
      * Insert a new user into the database.
      */

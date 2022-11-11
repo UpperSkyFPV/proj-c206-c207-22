@@ -13,10 +13,12 @@ public:
     SelectViewScene(shared_ptr<AppState> s,
                     shared_ptr<eng::ModalScene> create_user_modal_,
                     shared_ptr<eng::ModalScene> create_chat_modal_,
-                    shared_ptr<eng::ModalScene> add_user_to_chat_modal_)
+                    shared_ptr<eng::ModalScene> add_user_to_chat_modal_,
+                    shared_ptr<eng::ModalScene> remove_user_from_chat_modal_)
         : state{s}, create_user_modal{create_user_modal_},
-          create_chat_modal{create_chat_modal_}, add_user_to_chat_modal{
-                                                     add_user_to_chat_modal_} {}
+          create_chat_modal{create_chat_modal_},
+          add_user_to_chat_modal{add_user_to_chat_modal_},
+          remove_user_from_chat_modal{remove_user_from_chat_modal_} {}
 
     void update(eng::Engine &engine) override;
 
@@ -30,9 +32,11 @@ public:
     static std::shared_ptr<SelectViewScene>
     make(shared_ptr<AppState> s, shared_ptr<eng::ModalScene> create_user_modal,
          shared_ptr<eng::ModalScene> create_chat_modal,
-         shared_ptr<eng::ModalScene> add_user_to_chat_modal) {
+         shared_ptr<eng::ModalScene> add_user_to_chat_modal,
+         shared_ptr<eng::ModalScene> remove_user_from_chat_modal) {
         return std::make_shared<SelectViewScene>(
-            s, create_user_modal, create_chat_modal, add_user_to_chat_modal);
+            s, create_user_modal, create_chat_modal, add_user_to_chat_modal,
+            remove_user_from_chat_modal);
     }
 
 private:
@@ -53,6 +57,11 @@ private:
      * Add the handler for closing the add user to chat modal.
      */
     void add_adduser_close_handler(eng::Engine &engine);
+
+    /**
+     * Add the handler for closing the remove user to chat modal.
+     */
+    void add_removeuser_close_handler(eng::Engine &engine);
 
     /**
      * Remove the handler for closing any modal.
@@ -77,10 +86,12 @@ private:
     shared_ptr<eng::ModalScene> create_user_modal;
     shared_ptr<eng::ModalScene> create_chat_modal;
     shared_ptr<eng::ModalScene> add_user_to_chat_modal;
+    shared_ptr<eng::ModalScene> remove_user_from_chat_modal;
 
     eng::Engine::EventBus::Handle open_create_user_keybind_handle;
     eng::Engine::EventBus::Handle open_create_chat_keybind_handle;
     eng::Engine::EventBus::Handle open_add_user_to_chat_keybind_handle;
+    eng::Engine::EventBus::Handle open_remove_user_from_chat_keybind_handle;
     eng::Engine::EventBus::Handle close_any_modal_keybind_handle;
 };
 } // namespace uppr::app

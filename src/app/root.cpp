@@ -1,3 +1,4 @@
+#include "root.hpp"
 #include "add-user-to-chat-scene.hpp"
 #include "chat-scene.hpp"
 #include "chatview-scene.hpp"
@@ -9,8 +10,8 @@
 #include "file.hpp"
 #include "modal-scene.hpp"
 #include "perf-scene.hpp"
+#include "remove-user-from-chat-scene.hpp"
 #include "result.hpp"
-#include "root.hpp"
 #include "scene.hpp"
 #include "select-view.hpp"
 #include "sidebar-scene.hpp"
@@ -40,9 +41,13 @@ shared_ptr<eng::Scene> make_scene_tree(eng::Engine &engine,
         const auto add_usertochat_modal =
             eng::ModalScene::make(AddUserToChatScene::make(state));
 
-        stack->add_scene(engine, SelectViewScene::make(state, create_user_modal,
-                                                       create_chat_modal,
-                                                       add_usertochat_modal));
+        const auto remove_userfromchat_modal =
+            eng::ModalScene::make(RemoveUserFromChatScene::make(state));
+
+        stack->add_scene(engine,
+                         SelectViewScene::make(
+                             state, create_user_modal, create_chat_modal,
+                             add_usertochat_modal, remove_userfromchat_modal));
     }
 
     // The performance scene to shows performance stats
