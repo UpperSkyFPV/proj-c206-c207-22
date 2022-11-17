@@ -33,7 +33,7 @@ void ChatScene::draw(eng::Engine &engine, term::Transform transform,
     transform -= {0, 3};
     for (const auto &msg : state->get_messages_of_current_chat()) {
         const auto sent_by = state->find_user(msg.sent_by);
-        const auto name = sent_by ? sent_by->get().name : "unknown";
+        const auto name = sent_by ? sent_by->get().name : fmt::format("[{}]", msg.sent_by);
         screen.print(transform, " > {}: {}", name, msg.content);
         transform -= {0, 2};
 

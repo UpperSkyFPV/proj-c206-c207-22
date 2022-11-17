@@ -48,6 +48,7 @@ public:
 
         // Needs to update this every time we change the selected chat
         fetch_users_of_chat();
+        fetch_users();
 
         return selected_chat;
     }
@@ -63,6 +64,7 @@ public:
 
         // Needs to update this every time we change the selected chat
         fetch_users_of_chat();
+        fetch_users();
 
         return selected_chat;
     }
@@ -75,6 +77,7 @@ public:
 
         // Needs to update this every time we change the selected chat
         fetch_users_of_chat();
+        fetch_users();
     }
 
     /**
@@ -216,6 +219,7 @@ public:
     }
 
     std::optional<refw<const models::UserModel>> find_user(int id) {
+        LOG_F(8, "users={}", users.size());
         const auto a = std::ranges::find_if(
             users, [id](const auto &c) { return c.id == id; });
         if (a == users.end()) return std::nullopt;
@@ -281,11 +285,15 @@ public:
 
                 message_dao.insert(message);
             }
-
         } catch (const db::DatabaseError &e) {
             LOG_F(ERROR, "database error: {} {}", e.what(),
                   e.get_result().str());
         }
+
+        // Update everything?
+        fetch_users();
+        fetch_chats();
+        fetch_users_of_chat();
     }
 
     auto &get_outbound_message_list() { return outbound_messages; }
