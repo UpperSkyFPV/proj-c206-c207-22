@@ -9,6 +9,7 @@
 #include "except.hpp"
 #include "file.hpp"
 #include "modal-scene.hpp"
+#include "net-scene.hpp"
 #include "perf-scene.hpp"
 #include "remove-user-from-chat-scene.hpp"
 #include "result.hpp"
@@ -29,6 +30,7 @@ shared_ptr<eng::Scene> make_scene_tree(eng::Engine &engine,
     const auto stack = eng::StackScene::make();
 
     stack->add_scene(engine, SidebarScene::make(ChatScene::make(state), state));
+    stack->add_scene(engine, NetScene::make(state));
 
     // The main show
     {
@@ -56,7 +58,7 @@ shared_ptr<eng::Scene> make_scene_tree(eng::Engine &engine,
     return stack;
 }
 
-int start_app(shared_ptr<term::TermScreen> term_screen) {
+int start_app(shared_ptr<term::TermScreen> term_screen, int port, const std::string& name) {
     // Initialize the database connection
     const auto database_connection = uppr::except::wrap_fatal_exception([] {
         const auto source = file::read_file_text("res/tables-safe.sql");
@@ -70,7 +72,7 @@ int start_app(shared_ptr<term::TermScreen> term_screen) {
     });
 
     // Initialize the shared app state
-    const auto app_state = std::make_shared<AppState>(database_connection);
+    const auto app_state = std::make_shared<AppState>(database_connection, port, name);
 
     // Create our engine with FPS, screen and root scene (which we will insert
     // later)

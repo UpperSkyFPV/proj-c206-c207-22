@@ -8,7 +8,7 @@ namespace uppr::models {
 /**
  * The in-program structure to represent a row in the `Message` table.
  */
-struct ChatModel {
+struct MessageModel {
     // INTEGER PRIMARY KEY
     int id;
     // VARCHAR(255)
@@ -24,7 +24,7 @@ struct ChatModel {
     // INT
     int sent_by;
 
-    static ChatModel from_row(const db::PreparedStmt &stmt) {
+    static MessageModel from_row(const db::PreparedStmt &stmt) {
         const auto id = stmt.column_int(0);
         const auto content = stmt.column_text(1);
         const auto sent = stmt.column_int(2);

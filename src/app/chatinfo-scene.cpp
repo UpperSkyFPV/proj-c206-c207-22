@@ -19,16 +19,13 @@ void ChatInfoScene::draw(eng::Engine &engine, term::Transform transform,
         constexpr auto fmt = "Nothing selected"sv;
         const auto x = size.getx() / 2 - fmt.length() / 2;
 
-        screen.print(transform.move(x, 5), fmt);
+        screen.print(transform.move(x, 2), fmt);
     }
 }
 
-void ChatInfoScene::mount(eng::Engine &engine) {
-    update_users();
-}
+void ChatInfoScene::mount(eng::Engine &engine) { update_users(); }
 
-void ChatInfoScene::unmount(eng::Engine &engine) {
-}
+void ChatInfoScene::unmount(eng::Engine &engine) {}
 
 void ChatInfoScene::draw_chat_info(const models::ChatModel &chat,
                                    eng::Engine &engine,
@@ -45,9 +42,31 @@ void ChatInfoScene::draw_chat_info(const models::ChatModel &chat,
     std::vector<std::string> stringified;
     stringified.reserve(users_in_current_chat.size());
 
-    for (const auto &user : users_in_current_chat)
-        stringified.push_back(format("{} [{}]", user.name, user.id));
+    for (const auto &[addr, user] : users_in_current_chat)
+        stringified.push_back(format("{} [{}]", user.name, addr.port));
 
     screen.print(transform, "members: {}", join(stringified, ", "));
+}
+
+void ChatInfoScene::update_users() {
+    LOG_SCOPE_F(9, "update_users ChatViewInfoScene");
+
+    const auto selected = state->get_selected_chatmodel();
+    if (selected) {
+        const auto users = state->get_users_of_chat(*selected);
+
+        users_in_current_chat.clear();
+        for (const auto &u : users) {
+            users_in_current_chat.push_back(
+                {state->get_address_of(u.user_address), u});
+        }
+    }
+
+    for (const auto &[a, u] : users_in_current_chat) {
+        LOG_F(INFO, "{}, {}, {}, {}:{}", u.id, u.name, u.user_address, a.host,
+              a.port);
+    }
+
+    last_selected_chat = state->get_selected_chat();
 }
 } // namespace uppr::app

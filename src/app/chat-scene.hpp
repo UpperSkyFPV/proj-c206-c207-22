@@ -9,13 +9,16 @@
 #include "result.hpp"
 #include "state.hpp"
 #include "vector2.hpp"
+#include "writemsg-scene.hpp"
+#include <memory>
 
 namespace uppr::app {
 
 class ChatScene : public eng::Scene {
 public:
     ChatScene(shared_ptr<AppState> s)
-        : state{s}, chat_info{std::make_unique<ChatInfoScene>(s)} {}
+        : state{s}, chat_info{std::make_unique<ChatInfoScene>(s)},
+         write_msg{std::make_unique<WriteMsgScene>(s)} {}
 
     void update(eng::Engine &engine) override;
 
@@ -33,5 +36,6 @@ public:
 private:
     shared_ptr<AppState> state;
     unique_ptr<ChatInfoScene> chat_info;
+    unique_ptr<WriteMsgScene> write_msg;
 };
 } // namespace uppr::app

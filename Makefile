@@ -14,14 +14,16 @@ INC_DIRS := $(shell find $(SRC_DIRS) -type d) \
 			./vendor/loguru \
 			./vendor/tl/include \
 			./vendor/fmt/include \
-			./vendor/eventpp/include
+			./vendor/eventpp/include \
+			./vendor/sockpp/include \
+			./vendor/cppack/include
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 DEBUGFLAGS ?= -g
 RELEASEFLAGS ?= -O2 -Werror
 CMMFLAGS ?= $(INC_FLAGS) -MMD -MP $(RELEASEFLAGS) -Wall
 CPPFLAGS ?= -std=c++20 -DLOGURU_USE_FMTLIB=1
-LDFLAGS ?= -lpthread -ldl -lm -L./vendor/fmt/build -lfmt
+LDFLAGS ?= -lpthread -ldl -lm -L./vendor/fmt/build -lfmt -L./vendor/sockpp/build -lsockpp
 
 CXX = clang++
 CC = clang

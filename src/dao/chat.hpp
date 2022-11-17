@@ -5,6 +5,7 @@
 #include "models/chat.hpp"
 #include "models/user.hpp"
 #include "stmt.hpp"
+#include <string_view>
 #include <vector>
 
 namespace uppr::dao {
@@ -45,6 +46,33 @@ public:
         stmt.bind_int(1, chat.id);
         stmt.bind_int(2, user.id);
         stmt.step();
+    }
+
+    std::vector<std::pair<models::UserModel, models::ChatModel>>
+    all_that_contain_user(string_view name) {
+        std::vector<std::pair<models::UserModel, models::ChatModel>> result;
+        constexpr auto sql = R"~~(
+SELECT U.`id`, U.`name`, U.`user_address`, C.`id`, C.`name`, C.`description`
+       FROM User as U
+       JOIN Chat_has_User as CU
+       JOIN Chat as C
+       WHERE U.`name` = ? AND CU.`User_id` = U.`id` AND CU.`Chat_id` = C.`id`
+)~~"sv;
+        const auto stmt = db->prepare(sql);
+        stmt.bind_text(1, name);
+
+        while (stmt.step().is_row()) {
+
+            const auto user = models::UserModel::from_row(stmt);
+            models::ChatModel chat;
+            chat.id = stmt.column_int(3);
+            chat.name = stmt.column_text(4);
+            chat.description = stmt.column_text(5);
+
+            result.push_back({user, chat});
+        }
+
+        return result;
     }
 };
 } // namespace uppr::dao

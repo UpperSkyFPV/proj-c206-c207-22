@@ -5,6 +5,7 @@
 #include "models/address.hpp"
 #include "models/user.hpp"
 #include "stmt.hpp"
+#include <optional>
 #include <vector>
 
 namespace uppr::dao {
@@ -38,6 +39,15 @@ SELECT U.`id`, U.`name`, U.`user_address` FROM User AS U
         }
 
         return users;
+    }
+
+    models::UserModel with_id(int id) {
+        constexpr auto sql = "SELECT * FROM User WHERE id = ?"sv;
+        const auto stmt = db->prepare(sql);
+        stmt.bind_int(1, id);
+        stmt.step();
+
+        return models::UserModel::from_row(stmt);
     }
 
     void insert(const models::UserModel &m) const {
