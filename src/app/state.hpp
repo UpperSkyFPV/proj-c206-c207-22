@@ -252,7 +252,7 @@ public:
             .sent = false,
             .received = false,
             .error = "",
-            .in_chat = get_selected_chat(),
+            .in_chat = get_selected_chatmodel()->id,
             .sent_by = -1, // this should be filled in on receiving, so we set
                            // it to nothing here (this way we signal that -1
                            // means "sent by us")
@@ -313,11 +313,16 @@ public:
         return message_dao.all_for_chat(sel->id);
     }
 
+    string_view get_name() const noexcept { return name; }
+
 private:
     void send_message(int local_id, models::UdpMessage msg) {
         std::list<std::future<std::pair<int, std::string>>> results;
 
         for (const auto &member : members_of_chat) {
+            // Dont sent to our own address
+            if (member.name == name) continue;
+
             const auto addr = address_dao.with_id(member.user_address);
 
             LOG_F(5, "sending msg '{}' to {}:{}", msg.content, addr.host,

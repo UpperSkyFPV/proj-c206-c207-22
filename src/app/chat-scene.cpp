@@ -32,14 +32,23 @@ void ChatScene::draw(eng::Engine &engine, term::Transform transform,
 
     transform -= {0, 3};
     for (const auto &msg : state->get_messages_of_current_chat()) {
-        const auto sent_by = state->find_user(msg.sent_by);
-        const auto name = sent_by ? sent_by->get().name : fmt::format("[{}]", msg.sent_by);
-        screen.print(transform, " > {}: {}", name, msg.content);
+
+        auto prefix = " >"s;
+        std::string name;
+        if (msg.sent_by < 0) {
+            // Sent by us
+            name = state->get_name();
+            prefix = "<<"s;
+        } else {
+            const auto sent_by = state->find_user(msg.sent_by);
+            name = sent_by ? sent_by->get().name
+                           : fmt::format("[{}]", msg.sent_by);
+        }
+        screen.print(transform, "{} {}: {}", prefix, name, msg.content);
         transform -= {0, 2};
 
         // Stop when we run out of space
-        if (transform.gety() <= limit.gety())
-            break;
+        if (transform.gety() <= limit.gety()) break;
     }
 }
 
