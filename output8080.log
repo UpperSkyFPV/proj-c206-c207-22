@@ -1,0 +1,20 @@
+File verbosity level: 8
+date       time         ( uptime  ) [ thread name/id ]                   file:line     v| 
+2022-11-24 19:13:57.071 (   0.000s) [        7F709740]             loguru.cpp:842   INFO| Logging to 'output8080.log', mode: 'w', verbosity: 8
+2022-11-24 19:13:57.071 (   0.000s) [main thread     ]             loguru.cpp:660   INFO| arguments: ./build/a.out
+2022-11-24 19:13:57.071 (   0.000s) [main thread     ]             loguru.cpp:663   INFO| Current dir: /home/upprsk/Documents/ina/proj-c206-c207/repo
+2022-11-24 19:13:57.071 (   0.000s) [main thread     ]             loguru.cpp:665   INFO| stderr verbosity: -9
+2022-11-24 19:13:57.071 (   0.000s) [main thread     ]             loguru.cpp:666   INFO| -----------------------------------
+2022-11-24 19:13:57.071 (   0.000s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
+2022-11-24 19:13:57.080 (   0.008s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:13:57.080 (   0.009s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:13:57.080 (   0.009s) [main thread     ]     chatview-scene.cpp:55       5| Mount for chatview scene
+2022-11-24 19:13:57.080 (   0.009s) [main thread     ]          net-scene.cpp:72    INFO| Got listening port 8080
+2022-11-24 19:13:57.080 (   0.009s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:13:57.080 (   0.009s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:13:58.717 (   1.646s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:13:58.717 (   1.646s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:13:58.717 (   1.646s) [main thread     ]     chatview-scene.cpp:60       7| Selected next chat: 0
+2022-11-24 19:13:58.717 (   1.646s) [main thread     ]     chatinfo-scene.cpp:67    INFO| 1, user 0, 1, localhost:8080
+2022-11-24 19:14:01.489 (   4.418s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
+2022-11-24 19:14:05.503 (   8.431s) [main thread     ]             loguru.cpp:539   INFO| atexit
