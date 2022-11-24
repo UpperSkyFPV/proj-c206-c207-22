@@ -219,7 +219,7 @@ public:
     }
 
     std::optional<refw<const models::UserModel>> find_user(int id) {
-        LOG_F(8, "users={}", users.size());
+        //LOG_F(8, "users={}", users.size());
         const auto a = std::ranges::find_if(
             users, [id](const auto &c) { return c.id == id; });
         if (a == users.end()) return std::nullopt;
@@ -258,18 +258,22 @@ public:
                            // means "sent by us")
         };
 
-        models::UdpMessage msg{.content = model.content, .sent_by = name};
+        models::UdpMessage msg{
+            .content = model.content,
+            .sent_by = name,
+            .sent_from = get_selected_chatmodel()->name,
+        };
 
         const auto id = message_dao.insert(model);
         send_message(id, msg);
     }
 
     void recv_message(const models::UdpMessage &msg) {
-        LOG_F(INFO, "> {}: {}", msg.sent_by, msg.content);
+        LOG_F(INFO, "> {} on {}: {}", msg.sent_by, msg.sent_from, msg.content);
 
         try {
-            const auto users_chats =
-                chat_dao.all_that_contain_user(msg.sent_by);
+            const auto users_chats = chat_dao.all_that_contain_user_and_chat(
+                msg.sent_by, msg.sent_from);
             for (const auto &[user, chat] : users_chats) {
                 LOG_F(2, "Insering message from {}[{}] to {}[{}]", user.name,
                       user.id, chat.name, chat.id);
