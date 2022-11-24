@@ -11,6 +11,10 @@ void ChatViewScene::draw(eng::Engine &engine, term::Transform transform,
                          term::Size size, term::TermScreen &screen) {
     using namespace fmt;
 
+    screen.print(transform, emphasis::bold, "'{}' at port {}",
+                 state->get_name(), state->get_port());
+    transform += {0, 2};
+
     screen.print(transform, emphasis::underline, "> {} Available chats",
                  state->get_chats().size());
     transform += {0, 2};

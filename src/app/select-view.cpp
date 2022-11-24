@@ -102,6 +102,10 @@ void SelectViewScene::draw_bottom_panel(eng::Engine &engine,
         constexpr auto add_user_to_chat_help = "<ctrl+a> Add User |"sv;
         screen.print(transform, style, add_user_to_chat_help);
         transform += {1 + add_user_to_chat_help.size(), 0};
+
+        constexpr auto message_help = "<m> Write |"sv;
+        screen.print(transform, style, message_help);
+        transform += {1 + message_help.size(), 0};
     }
 }
 

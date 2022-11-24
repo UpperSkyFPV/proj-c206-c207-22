@@ -219,7 +219,7 @@ public:
     }
 
     std::optional<refw<const models::UserModel>> find_user(int id) {
-        //LOG_F(8, "users={}", users.size());
+        // LOG_F(8, "users={}", users.size());
         const auto a = std::ranges::find_if(
             users, [id](const auto &c) { return c.id == id; });
         if (a == users.end()) return std::nullopt;
@@ -319,6 +319,8 @@ public:
 
     string_view get_name() const noexcept { return name; }
 
+    int get_port() const { return port; }
+
 private:
     void send_message(int local_id, models::UdpMessage msg) {
         std::list<std::future<std::pair<int, std::string>>> results;
@@ -356,8 +358,6 @@ private:
 
         outbound_messages.push_back(std::move(results));
     }
-
-    int get_port() const { return port; }
 
 private:
     /**
