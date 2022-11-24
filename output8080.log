@@ -1,15 +1,32 @@
 File verbosity level: 8
 date       time         ( uptime  ) [ thread name/id ]                   file:line     v| 
-2022-11-24 19:19:39.834 (   0.000s) [        DAB42740]             loguru.cpp:842   INFO| Logging to 'output8080.log', mode: 'w', verbosity: 8
-2022-11-24 19:19:39.834 (   0.000s) [main thread     ]             loguru.cpp:660   INFO| arguments: ./build/a.out
-2022-11-24 19:19:39.834 (   0.000s) [main thread     ]             loguru.cpp:663   INFO| Current dir: /home/upprsk/Documents/ina/proj-c206-c207/repo
-2022-11-24 19:19:39.834 (   0.000s) [main thread     ]             loguru.cpp:665   INFO| stderr verbosity: -9
-2022-11-24 19:19:39.834 (   0.000s) [main thread     ]             loguru.cpp:666   INFO| -----------------------------------
-2022-11-24 19:19:39.834 (   0.000s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
-2022-11-24 19:19:39.834 (   0.000s) [main thread     ]               conn.cpp:79    INFO| { execute_many
-2022-11-24 19:19:39.835 (   0.000s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
-2022-11-24 19:19:39.835 (   0.000s) [main thread     ]     chatview-scene.cpp:59       5| Mount for chatview scene
-2022-11-24 19:19:39.835 (   0.000s) [main thread     ]          net-scene.cpp:72    INFO| Got listening port 8080
-2022-11-24 19:19:39.835 (   0.000s) [main thread     ]               conn.cpp:79    INFO| { execute_many
-2022-11-24 19:19:39.835 (   0.000s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
-2022-11-24 19:19:42.231 (   2.396s) [main thread     ]             loguru.cpp:539   INFO| atexit
+2022-11-24 19:41:38.947 (   0.000s) [        B99FB740]             loguru.cpp:842   INFO| Logging to 'output8080.log', mode: 'w', verbosity: 8
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]             loguru.cpp:660   INFO| arguments: ./build/a.out
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]             loguru.cpp:663   INFO| Current dir: /home/upprsk/Documents/ina/proj-c206-c207/repo
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]             loguru.cpp:665   INFO| stderr verbosity: -9
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]             loguru.cpp:666   INFO| -----------------------------------
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]     chatview-scene.cpp:59       5| Mount for chatview scene
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]          net-scene.cpp:72    INFO| Got listening port 8080
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:41:38.947 (   0.000s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:41:39.783 (   0.836s) [main thread     ]     chatview-scene.cpp:64       7| Selected next chat: -1
+2022-11-24 19:41:39.917 (   0.970s) [main thread     ]     chatview-scene.cpp:64       7| Selected next chat: -1
+2022-11-24 19:41:41.956 (   3.009s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:41:41.956 (   3.009s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:41:52.400 (  13.453s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
+2022-11-24 19:41:56.918 (  17.971s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
+2022-11-24 19:41:57.185 (  18.238s) [main thread     ]  create-chat-scene.cpp:95    INFO| Saving! 'Friends', 'Chat for friends'
+2022-11-24 19:41:57.198 (  18.251s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:41:57.198 (  18.251s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:41:57.653 (  18.706s) [main thread     ]               term.cpp:40    WARN| set_termios_control 1, 0
+2022-11-24 19:41:57.759 (  18.812s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
+2022-11-24 19:41:57.759 (  18.812s) [main thread     ]        select-view.cpp:137      8| closing create chat
+2022-11-24 19:41:57.860 (  18.913s) [main thread     ]               term.cpp:40    WARN| set_termios_control 1, 0
+2022-11-24 19:41:57.967 (  19.020s) [main thread     ]               term.cpp:40    WARN| set_termios_control 0, 0
+2022-11-24 19:41:58.302 (  19.355s) [main thread     ]               conn.cpp:79    INFO| { execute_many
+2022-11-24 19:41:58.302 (  19.355s) [main thread     ]               conn.cpp:79    INFO| } 0.000 s: execute_many
+2022-11-24 19:41:58.302 (  19.355s) [main thread     ]     chatview-scene.cpp:64       7| Selected next chat: 0
+2022-11-24 19:42:05.055 (  26.108s) [main thread     ]             loguru.cpp:539   INFO| atexit

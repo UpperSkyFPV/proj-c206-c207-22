@@ -1,25 +1,28 @@
 # TermGram - Terminal messaging
 
-Um sistema de mensagens extremamente básico para se comunicar sem sair do terminal.
+Um sistema de mensagens _extremamente básico_ para se comunicar sem sair do terminal.
 
 ----
 
 > Lucas Ross - GEC 1718
 
+> Projeto de C206 e C207 - 2022/2
+
 ---
 
-# Tecs
+# Tecs usadas
 
 - C++:
-    1. Linguagem escolhida por permitir código em alto nível ao mesmo tempo que se mantém performance.
-    2. Pode ser compilada para facilitar a distribuição.
-    3. Não precisa de um runtime instalado.
+    1. Pode ser compilada para facilitar a distribuição.
+    2. Não precisa de um runtime instalado.
+    3. Familiaridade.
 - SQLite:
     1. Banco de dados escolhido por não precisar de um servidor separado rodando.
     2. Compativel quase perfeitamente com MySQL.
     3. Um único arquivo gerado no sistema de arquivos.
 - Comunicação UDP:
-    1. Porque não?
+    1. Simples e fácil de usar.
+    2. Porque não?
 - MessagePack:
     1. Confiável e compacto.
 
@@ -156,3 +159,40 @@ CREATE TABLE `Chat_has_User` (
 );
 ```
 
+---
+
+# Demo Time!
+
+---
+
+# Funcionamento
+
+O procedimento para enviar uma mensagem é bastante simples:
+
+- Um usuário escreve uma mensagem no campo de texto.
+- O applicativo descobre no banco o endereço e nome de todos os contatos naquele chat.
+- O applicativo envia para cada um dos endereços a mensagem codificada como [msgpack](https://msgpack.org/)
+
+Formato de uma mensagem:
+```json
+{
+    "content": "Hello!",
+    "sent_by": "arnold",
+    "sent_from": "terminator"
+}
+```
+
+Onde:
+
+- `content` é o conteúdo da mensagem em UTF-8.
+- `sent_by`: é o nome do unsuário que enviou a mensagem.
+- `sent_from`: é o nome do chat de onde a mensagem foi enviada.
+
+---
+
+# Funcionamento
+
+O procedimento para receber uma mensagem é igualmente simples:
+
+- O aplicativo está escutando na porta programada e recebe um pacote.
+- O pacote é decodificado e então o conteúdo é inserido no chat que possui o nome recebido.

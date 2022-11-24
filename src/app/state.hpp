@@ -41,6 +41,9 @@ public:
      * @return The index (not the ID!) of the newly selected chat.
      */
     int select_next_chat() {
+        // Dont segfault on no chats
+        if (chats.size() == 0) return -1;
+
         if (selected_chat < 0)
             selected_chat = 0;
         else
@@ -60,6 +63,9 @@ public:
      * @return The index (not the ID!) of the newly selected chat.
      */
     int select_prev_chat() {
+        // Dont segfault on no chats
+        if (chats.size() == 0) return -1;
+
         if (--selected_chat < 0) selected_chat = chats.size() - 1;
 
         // Needs to update this every time we change the selected chat

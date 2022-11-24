@@ -99,9 +99,15 @@ void SelectViewScene::draw_bottom_panel(eng::Engine &engine,
     transform += {1 + create_chat_help.size(), 0};
 
     if (state->has_chat_selected()) {
+        /*
         constexpr auto add_user_to_chat_help = "<ctrl+a> Add User |"sv;
         screen.print(transform, style, add_user_to_chat_help);
         transform += {1 + add_user_to_chat_help.size(), 0};
+
+        constexpr auto remove_user_to_chat_help = "<ctrl+a> Remove User |"sv;
+        screen.print(transform, style, remove_user_to_chat_help);
+        transform += {1 + remove_user_to_chat_help.size(), 0};
+        */
 
         constexpr auto message_help = "<m> Write |"sv;
         screen.print(transform, style, message_help);
