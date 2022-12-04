@@ -19,6 +19,7 @@ public:
               term::TermScreen &screen) override {
         using namespace fmt;
 
+        /*
         const auto max_frame = engine.get_max_frame_time();
         const auto frame = engine.get_frame_time();
         const auto update = engine.get_update_time();
@@ -37,6 +38,7 @@ public:
         screen.print(transform.move(size.getx() - 60, 0),
                      "{:05d}/{:05d}us ({:0.2f}%, {:0.2f}%, {:0.2f}%, {:0.2f}%)",
                      frame, max_frame, pframe, pupdate, pdraw, pcommit);
+                     */
     }
 
     /**
